@@ -110,6 +110,11 @@ for( # Loop through every column in cd1
         }
     }
 }
+
+# Splitting internet service into fiber optic and DSL
+cd1 <- mutate(cd1, fiberoptic = ifelse(internetservice == "Fiber optic", 
+                                       yes = T, no = F))
+cd1 <- mutate(cd1, dsl = ifelse(internetservice == "DSL", yes = T, no = F))
 ```
 
 I can't get this function to work
