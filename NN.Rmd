@@ -58,9 +58,37 @@ Trying neural networks with churn data
 # If not done already
 # library(neuralnet)
 # library(dplyr)
+library(purrr)
 
+# Load the data
 cd1 <- read.csv(file = "Churn.csv", header = TRUE, sep = ",")
 
+# Edit column names so that they are all lowercase
+colnames(cd1) <- map(colnames(cd1), tolower)
+
+# Cleaning up the 1's & 0's into logical columns
+# Can check if the columns are binary with count(cd1, columnname1)
+
+for(i in length(colnames(cd1))){
+    # If column is has 0 and 1 as its levels
+    
+    # Use this function cd1$seniorcitizen = as.logical(cd1$seniorcitizen)
+    
+    # If length(levels(factor(cd0$multiplelines))) < 3
+    # and Yes is one of the levels, then use this
+    # ifelse(cd1$dependents == "Yes", yes = T, no = F)
+    
+}
+
+cd1$seniorcitizen = as.logical(cd1$seniorcitizen)
+cd1$partner = as.logical(cd1$seniorcitizen)
+cd1$dependents = ifelse(cd1$dependents == "Yes", yes = T, no = F)
+cd1$phoneservice = ifelse(cd1$phoneservice == "Yes", yes = T, no = F)
+cd1$multiplelines = ifelse(cd1$multiplelines == "Yes", yes = T, no = F)
+cd1$onlinesecurity = ifelse(cd1$onlinesecurity == "Yes", yes = T, no = F)
+cd1$onlinebackup = ifelse(cd1$onlinebackup == "Yes", yes = T, no = F)
+cd1$deviceprotection = ifelse(cd1$deviceprotection == "Yes", yes = T, no = F)
+cd1$techsupport = ifelse(cd1$techsupport == "Yes", yes = T, no = F)
 
 ```
 
