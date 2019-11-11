@@ -53,7 +53,9 @@ prob1 <- Predict1$net.result
 (pred1 <- ifelse(prob1 > 0.5, yes = 1, no = 0))
 ```
 
-Trying neural networks with churn data
+**Trying neural networks with churn data**
+
+*Cleaning the data*
 ```{r}
 # If not done already
 # library(neuralnet)
@@ -61,68 +63,72 @@ Trying neural networks with churn data
 library(purrr)
 
 # Load the data
-cd1 <- read.csv(file = "Churn.csv", header = TRUE, sep = ",")
+cd1 <- read.csv(file = "Churn.csv", header = TRUE, sep = ",", 
+                stringsAsFactors = F)
 
 # Edit column names so that they are all lowercase
 colnames(cd1) <- map(colnames(cd1), tolower)
 
-# Function that makes a yes/no/something_else column, or 0/1 column into a
-# logical column consisting of TRUE/FALSE
-binarize <- function(cd1){
-    for( i in c( 1:length(colnames(cd1)) ) ){
-        print(i)
-        if(
-            (levels(factor( cd1[[ colnames(cd1)[i] ]] ))[1] == "0" |
-             levels(factor( cd1[[ colnames(cd1)[i] ]] ))[2] == "0") &
-            (levels(factor( cd1[[ colnames(cd1)[i] ]] ))[1] == "1" |
-             levels(factor( cd1[[ colnames(cd1)[i] ]] ))[2] == "1")
-        ){
-            print(i)
-            cd1[ , i] = as.logical(cd1[ , i])
-        }
+for( # Loop through every column in cd1
+    i in c( 1:length(colnames(cd1)) )
+){
+    if( # Check that the column has 2 levels and that they contain 0 and 1
+        (length(levels(factor( cd1[[ colnames(cd1)[i] ]] )) ) == 2) &
+        (levels(factor( cd1[[ colnames(cd1)[i] ]] ))[1] == "0" |
+         levels(factor( cd1[[ colnames(cd1)[i] ]] ))[2] == "0") &
+        (levels(factor( cd1[[ colnames(cd1)[i] ]] ))[1] == "1" |
+         levels(factor( cd1[[ colnames(cd1)[i] ]] ))[2] == "1")
+    ){ # Turn the column into a logical column of TRUE's and FALSE's
+      cd1[[ colnames(cd1)[i] ]] <- as.logical(cd1[[ colnames(cd1)[i] ]])  
     }
-}
-for( i in c( 1:length(colnames(cd1)) ) ){
-    # If column is has 0 and 1 as its levels
-    if( (levels(factor( cd1[[ colnames(cd1)[i] ]] ))[1] == "0" |
-         levels(factor(cd1[ , i]))[2] == "0") &
-        (levels(factor(cd1[ , i]))[1] == "1" | 
-         levels(factor(cd1[ , i]))[2] == "1") ){
-        cd1[[ colnames(cd1)[i] ]] <- as.logical(cd1[[ colnames(cd1)[i] ]])
-    }
-    # If "Yes" and "No" are one of the levels, and if there are only 3 levels
-    else if( length(levels(factor( cd1[[ colnames(cd1)[i] ]] )) ) < 4
+    else if( # If there are three levels in the column
+        length(levels(factor( cd1[[ colnames(cd1)[i] ]] )) ) == 3
     ){
-        if( (levels(factor( cd1[[ colnames(cd1)[i] ]] ))[1] == "Yes" |
-           levels(factor( cd1[[ colnames(cd1)[i] ]] ))[2] == "Yes" |
-           levels(factor( cd1[[ colnames(cd1)[i] ]] ))[3] == "Yes") &
-           (levels(factor( cd1[[ colnames(cd1)[i] ]] ))[1] == "No" |
-           levels(factor( cd1[[ colnames(cd1)[i] ]] ))[2] == "No" |
-           levels(factor( cd1[[ colnames(cd1)[i] ]] ))[3] == "No")
-          ){
-            cd1[[ colnames(cd1)[i] ]] <- ifelse(cd1[[ colnames(cd1)[i] ]] ==
-                                                "Yes",
-                                                yes = T,
-                                                no = F)
+        if( # Check that Yes and No are two of the factors
+            (levels(factor( cd1[[ colnames(cd1)[i] ]] ))[1] == "Yes" |
+             levels(factor( cd1[[ colnames(cd1)[i] ]] ))[2] == "Yes" |
+             levels(factor( cd1[[ colnames(cd1)[i] ]] ))[3] == "Yes") &
+            (levels(factor( cd1[[ colnames(cd1)[i] ]] ))[1] == "No" |
+             levels(factor( cd1[[ colnames(cd1)[i] ]] ))[2] == "No" |
+             levels(factor( cd1[[ colnames(cd1)[i] ]] ))[3] == "No")
+        ){ # Convert Yes's to TRUE and everything else to FALSE
+            cd1[[ colnames(cd1)[i] ]] <- 
+                ifelse(cd1[[ colnames(cd1)[i] ]] == "Yes", yes = T, no = F)
+        } # This assumes that the third level is also no/FALSE
+    }
+    else if( # If there are two levels in the column
+        length(levels(factor( cd1[[ colnames(cd1)[i] ]] )) ) == 2
+    ){
+        if( # Check that the factors are Yes or No
+            (levels(factor( cd1[[ colnames(cd1)[i] ]] ))[1] == "Yes" |
+             levels(factor( cd1[[ colnames(cd1)[i] ]] ))[2] == "Yes") &
+            (levels(factor( cd1[[ colnames(cd1)[i] ]] ))[1] == "No" |
+             levels(factor( cd1[[ colnames(cd1)[i] ]] ))[2] == "No")
+        ){
+            cd1[[ colnames(cd1)[i] ]] <- 
+                ifelse(cd1[[ colnames(cd1)[i] ]] == "Yes", yes = T, no = F)
         }
     }
 }
-    # Use this function cd1$seniorcitizen = as.logical(cd1$seniorcitizen)
-    
-    # If length(levels(factor(cd0$multiplelines))) < 3
-    # and Yes is one of the levels, then use this
-    # ifelse(cd1$dependents == "Yes", yes = T, no = F)
+```
 
-cd1$seniorcitizen = as.logical(cd1$seniorcitizen)
-cd1$partner = as.logical(cd1$seniorcitizen)
-cd1$dependents = ifelse(cd1$dependents == "Yes", yes = T, no = F)
-cd1$phoneservice = ifelse(cd1$phoneservice == "Yes", yes = T, no = F)
-cd1$multiplelines = ifelse(cd1$multiplelines == "Yes", yes = T, no = F)
-cd1$onlinesecurity = ifelse(cd1$onlinesecurity == "Yes", yes = T, no = F)
-cd1$onlinebackup = ifelse(cd1$onlinebackup == "Yes", yes = T, no = F)
-cd1$deviceprotection = ifelse(cd1$deviceprotection == "Yes", yes = T, no = F)
-cd1$techsupport = ifelse(cd1$techsupport == "Yes", yes = T, no = F)
-
+I can't get this function to work
+```{r}
+binarize <- function(df1){
+        for(
+        i in c( 1:length(colnames(df1)) )
+    ){
+        if(
+            (levels(factor( df1[[ colnames(df1)[i] ]] ))[1] == "0" |
+             levels(factor( df1[[ colnames(df1)[i] ]] ))[2] == "0") &
+            (levels(factor( df1[[ colnames(df1)[i] ]] ))[1] == "1" |
+             levels(factor( df1[[ colnames(df1)[i] ]] ))[2] == "1")
+        ){ # For some reason this line doesn't work
+          df1[[ colnames(df1)[i] ]] <- as.logical(df1[[ colnames(df1)[i] ]])  
+        }
+    }
+}
+# Use 'binarize(cd1)' to try this function
 ```
 
 
