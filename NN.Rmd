@@ -1,12 +1,10 @@
 ---
-title: "S350 A1Q2.1"
+title: "Churn analysis with neuralnet"
 author: "Jackie Lu"
-date: '2019-09-19'
+date: '2019-11-10'
 header-includes:
   - \usepackage{latexsym,graphicx}
   - \usepackage{xcolor}
-output: pdf_document:
-  highlight: espresso
 ---
 \definecolor{mylightgray}{RGB}{215, 215, 215}
 \color{mylightgray}
@@ -57,6 +55,12 @@ prob1 <- Predict1$net.result
 
 Trying neural networks with churn data
 ```{r}
+# If not done already
+# library(neuralnet)
+# library(dplyr)
+
+cd1 <- read.csv(file = "Churn.csv", header = TRUE, sep = ",")
+
 
 ```
 
