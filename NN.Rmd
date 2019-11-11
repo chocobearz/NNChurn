@@ -1,0 +1,67 @@
+---
+title: "S350 A1Q2.1"
+author: "Jackie Lu"
+date: '2019-09-19'
+header-includes:
+  - \usepackage{latexsym,graphicx}
+  - \usepackage{xcolor}
+output: pdf_document:
+  highlight: espresso
+---
+\definecolor{mylightgray}{RGB}{215, 215, 215}
+\color{mylightgray}
+\definecolor{mydarkgray}{RGB}{45, 45, 45}
+\pagecolor{mydarkgray}
+$\sigma_e^2$\\
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Info:
+```{r}
+# Link to the article that informed this code
+# https://www.datacamp.com/community/tutorials/neural-network-models-r
+```
+
+Example
+```{r}
+library(neuralnet)
+library(dplyr)
+
+# creating training data set
+TKS1 = c(20, 10, 30, 20, 80, 30)
+CSS1 = c(90, 20, 40, 50, 50, 80)
+Placed1 = c(1, 0, 0, 0, 1, 1)
+
+# Here, you will combine multiple columns or features into a single set of data
+df1 = data.frame(TKS1, CSS1, Placed1)
+
+# Fitting the neural network
+nn1 <- neuralnet(Placed1 ~ TKS1 + CSS1, data = df1, hidden = 3, act.fct = "logistic", linear.output = F)
+
+# Plotting the neural network
+plot(nn1)
+
+# Creating a test set
+TKS1 = c(30, 40, 85)
+CSS1 = c(85, 50, 40)
+test1 <- data.frame(TKS1, CSS1)
+
+# Predict 'Placed1'
+Predict1 = neuralnet::compute(nn1, test1)
+Predict1$net.result
+
+# Converting probabilities into binary placed or not
+prob1 <- Predict1$net.result
+(pred1 <- ifelse(prob1 > 0.5, yes = 1, no = 0))
+```
+
+Trying neural networks with churn data
+```{r}
+
+```
+
+
+
+
+
