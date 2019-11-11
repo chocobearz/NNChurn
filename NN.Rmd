@@ -112,9 +112,36 @@ for( # Loop through every column in cd1
 }
 
 # Splitting internet service into fiber optic and DSL
-cd1 <- mutate(cd1, fiberoptic = ifelse(internetservice == "Fiber optic", 
+cd1 <- mutate(cd1, internet_fiberoptic = ifelse(internetservice == "Fiber optic", 
                                        yes = T, no = F))
-cd1 <- mutate(cd1, dsl = ifelse(internetservice == "DSL", yes = T, no = F))
+cd1 <- mutate(cd1, internet_dsl = ifelse(internetservice == "DSL", yes = T, no = F))
+# Turning gender into logical
+cd1 <- mutate(cd1, is_female = ifelse(gender == "Female", yes = T, no = F))
+# Turning contract into binary columns as well
+cd1 <- mutate(cd1, 
+              month_to_month_contract = ifelse(contract == "Month-to-month", 
+                                               yes = T, no = F))
+cd1 <- mutate(cd1, one_year_contract = ifelse(contract == "One year",
+                                              yes = T, no = F))
+cd1 <- mutate(cd1, two_year_contract = ifelse(contract == "Two year",
+                                              yes = T, no = F))
+# Payment method
+cd1 <- mutate(cd1, payment_bank_transfer = 
+                  ifelse(paymentmethod == "Bank transfer (automatic)",
+                         yes = T, no = F))
+cd1 <- mutate(cd1, payment_credit_card_auto = 
+                  ifelse(paymentmethod == "Credit card (automatic)",
+                         yes = T, no = F))
+cd1 <- mutate(cd1, payment_e_check = 
+                  ifelse(paymentmethod == "Electronic check",
+                         yes = T, no = F))
+cd1 <- mutate(cd1, payment_mailed_check = 
+                  ifelse(paymentmethod == "Mailed check",
+                         yes = T, no = F))
+
+# Remove the defunct columns
+cd1 <- mutate(cd1, gender = NULL) %>% mutate(internetservice = NULL) %>%
+    mutate(paymentmethod = NULL) %>% mutate(contract = NULL)
 ```
 
 I can't get this function to work
