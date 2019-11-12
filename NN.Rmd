@@ -141,13 +141,18 @@ summary(cd1)
 
 ## Fitting the model
 ```{r}
-df1 = data.frame(TKS1, CSS1, Placed1)
-
 # Fitting the neural network
-nn1 <- neuralnet(Placed1 ~ TKS1 + CSS1, data = df1, hidden = 3, act.fct = "logistic", linear.output = F)
+full_formula <- as.formula(paste("churn ~ ", paste(colnames(cd1)[c(2:5, 7:17, 19, 22:25)], collapse = " + ")))
+
+# Only using monthlycharges and tenure columns for now
+# Using full_formula as the formula gives an error stating that everything has
+# to be numeric/vector/something else
+nn1 <- neuralnet(churn ~ monthlycharges + tenure, data = cd1, hidden = 3, act.fct = "logistic", linear.output = F)
+
+plot(nn1)
 ```
 
-## Using logistic regression
+## Using effect plots to detemine which regressors to use for logistic reg.
 ```{r, fig.width = 10, fig.height = 8}
 # Making effect plots and omitting certain variables
 # Splitting into three plots so that it is more readable
