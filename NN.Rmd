@@ -20,9 +20,9 @@ Info:
 ```
 
 Example
-```{r}
-library(neuralnet)
-library(dplyr)
+```{r, eval = F}
+#library(neuralnet)
+#library(dplyr)
 
 # creating training data set
 TKS1 = c(20, 10, 30, 20, 80, 30)
@@ -56,12 +56,12 @@ prob1 <- Predict1$net.result
 
 ##Libraries
 ```{r}
-# If not done already
-# library(neuralnet)
+library(neuralnet)
 library(purrr)
 library(dplyr)
 library(knitr)
 library(forcats)
+library(effects) # For effect plots
 ```
 
 ## Load origin data
@@ -137,8 +137,39 @@ cd1%>%
 
 print("TIDIED DATA")    
 summary(cd1)
-  
 ```
+
+## Fitting the model
+```{r}
+df1 = data.frame(TKS1, CSS1, Placed1)
+
+# Fitting the neural network
+nn1 <- neuralnet(Placed1 ~ TKS1 + CSS1, data = df1, hidden = 3, act.fct = "logistic", linear.output = F)
+```
+
+## Using logistic regression
+```{r, fig.width = 10, fig.height = 8}
+# Making effect plots and omitting certain variables
+# Splitting into three plots so that it is more readable
+# Create the three formulas
+formula_1 <- as.formula(paste("churn ~ ", paste(colnames(cd1)[c(2:5, 7:11)], collapse = " + ")))
+formula_2 <- as.formula(paste("churn ~ ", paste(colnames(cd1)[c(12:17, 19, 22, 23)], collapse = " + ")))
+formula_3 <- as.formula(paste("churn ~ ", paste(colnames(cd1)[c(24, 25)], collapse = " + ")))
+# Creating the logistic regression models
+lrfit1 <- glm(formula_1, cd1, family = binomial(link = "logit"))
+lrfit2 <- glm(formula_2, cd1, family = binomial(link = "logit"))
+lrfit3 <- glm(formula_3, cd1, family = binomial(link = "logit"))
+# Making the plots; third plot is in the next code chunk
+plot(allEffects(lrfit1), type = "response")
+plot(allEffects(lrfit2), type = "response")
+#plot(allEffects(lrfit3), type = "response")
+```
+
+```{r, fig.width = 8, fig.height = 4}
+plot(allEffects(lrfit3), type = "response")
+```
+
+
 
 
 
