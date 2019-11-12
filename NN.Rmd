@@ -1,6 +1,6 @@
 ---
 title: "Churn analysis with neuralnet"
-author: "Jackie Lu"
+author: "Paige, Vicky, and Jackie"
 date: '2019-11-10'
 output: 
   prettydoc::html_pretty:
@@ -8,11 +8,6 @@ output:
   highlight : github
   math: katex
 ---
-\definecolor{mylightgray}{RGB}{215, 215, 215}
-\color{mylightgray}
-\definecolor{mydarkgray}{RGB}{45, 45, 45}
-\pagecolor{mydarkgray}
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -86,13 +81,13 @@ summary(cd1)
 colnames(cd1) <- map(colnames(cd1), tolower)
 
 
-# update all factors conaining "No internet service" to be part of the "No" level
+# update all factors containing "No internet service" to be part of the "No" level
 cd1[10:15] <- lapply(cd1[10:15], function(x) fct_collapse(x, No = c("No", "No internet service")) )
 
 
 
 cd1%>%
-  # update all factor conaining "No phone service" to be part of the "No" level
+  # update all factor containing "No phone service" to be part of the "No" level
   mutate(
     multiplelines = fct_collapse(
       multiplelines, No = c("No", "No phone service")
