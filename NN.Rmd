@@ -97,16 +97,16 @@ cd1%>%
     mutate(
       paymentmethodA = fct_collapse(
         paymentmethod, 
-        auto = c("Bank transfer (automatic)", "Credit card (automatic)"),
-        check = c("Electronic check", "Mailed check")
+        auto = c("bankTransfer", "creditCard"),
+        check = c("electronicCheck", "mailedCheck")
       )
     ) %>%
       # gather factors for payments based on electronic or non electronic
       mutate(
         paymentmethodB = fct_collapse(
           paymentmethod, 
-          electronic = c("Bank transfer (automatic)", "Credit card (automatic)", "Electronic check"),
-          paper = c("Mailed check")
+          electronic = c("bankTransfer", "creditCard", "electronicCheck"),
+          paper = c("mailedCheck")
         )
       ) %>%
         # update customer ID to character 
@@ -116,7 +116,7 @@ cd1%>%
           # bin tenure into short term, mid range, and long term
           mutate(
             tenure3 = cut(
-              tenure, breaks = c(-Inf, 20, 60, Inf), labels = c("short term", "mid term", "long term")
+              tenure, breaks = c(-Inf, 20, 60, Inf), labels = c("shortTerm", "midTerm", "longTerm")
             )
           ) %>%
             # bin tenure into quantiles
