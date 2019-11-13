@@ -141,6 +141,20 @@ summary(cd1)
 
 ## Fitting the model
 ```{r}
+m <- model.matrix( 
+  ~ . -churn -customerid, 
+  data = cd1
+)
+head(m)
+
+r <- neuralnet(churn ~ genderMale + seniorcitizenYes + partnerYes + dependentsYes + tenure +phoneserviceYes + multiplelinesYes + internetservicefiberOptic + internetserviceNo + onlinesecurityYes + onlinebackupYes + deviceProtectionYes + techsupportYes + streamingtvYes + streamingmoviesYes + contractoneYear + contracttwoYear + paperlessbillingYes + paymentmethodAcheck,
+  data=m, hidden=10, threshold=0.01
+)
+
+```
+
+```{r}
+
 # Fitting the neural network
 full_formula <- as.formula(paste("churn ~ ", paste(colnames(cd1)[c(2:5, 7:17, 19, 22:25)], collapse = " + ")))
 
