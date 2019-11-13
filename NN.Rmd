@@ -142,12 +142,12 @@ summary(cd1)
 ## Fitting the model
 ```{r}
 m <- model.matrix( 
-  ~ . -churn -customerid, 
+  ~ . -customerid, 
   data = cd1
 )
 head(m)
 
-r <- neuralnet(churn ~ genderMale + seniorcitizenYes + partnerYes + dependentsYes + tenure +phoneserviceYes + multiplelinesYes + internetservicefiberOptic + internetserviceNo + onlinesecurityYes + onlinebackupYes + deviceProtectionYes + techsupportYes + streamingtvYes + streamingmoviesYes + contractoneYear + contracttwoYear + paperlessbillingYes + paymentmethodAcheck,
+r <- neuralnet(churnYes ~ genderMale + seniorcitizenYes + partnerYes + dependentsYes + tenure +phoneserviceYes + multiplelinesYes + internetservicefiberOptic + internetserviceNo + onlinesecurityYes + onlinebackupYes + deviceProtectionYes + techsupportYes + streamingtvYes + streamingmoviesYes + contractoneYear + contracttwoYear + paperlessbillingYes + paymentmethodAcheck,
   data=m, hidden=10, threshold=0.01
 )
 
