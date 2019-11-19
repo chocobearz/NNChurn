@@ -14,7 +14,7 @@ output:
 
 #load clean data
 ```{r}
-# Load the data
+library(dplyr)# Load the data
 cd <- read.csv(file = "cleanData.csv", header = TRUE, sep = ",", 
                 stringsAsFactors = T)
 
