@@ -17,6 +17,6 @@ cd <- read.csv(file = "Churn.csv", header = TRUE, sep = ",",
                 stringsAsFactors = T)
 
 print("ORIGIN DATA")
-summary(cd1)
+summary(cd)
 ```
 
