@@ -1,0 +1,35 @@
+---
+title: "Variable Selection"
+author: "Paige, Vicky, and Jackie"
+date: '2019-11-10'
+output: 
+  prettydoc::html_pretty:
+  theme : cayman
+  highlight : github
+  math: katex
+---
+
+#selection methods to determine best regressors
+
+
+```{r}
+library(ggplot2)
+library(leaps)
+library(knitr)
+```
+
+#load data
+
+```{r}
+library(dplyr)# Load the data
+cd <- read.csv(file = "cleanData.csv", header = TRUE, sep = ",", 
+                stringsAsFactors = T)
+
+print("ORIGIN DATA")
+
+mutate(cd, customerid = as.character(customerid)) -> cd
+
+summary(cd)
+str(cd)
+```
+
