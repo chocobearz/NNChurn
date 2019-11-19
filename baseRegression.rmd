@@ -1,0 +1,22 @@
+---
+title: "Churn analysis with logRegression"
+author: "Paige, Vicky, and Jackie"
+date: '2019-11-10'
+output: 
+  prettydoc::html_pretty:
+  theme : cayman
+  highlight : github
+  math: katex
+---
+
+#This file is our basic logistic regression analysis and our variable assesments
+
+```{r}
+# Load the data
+cd <- read.csv(file = "Churn.csv", header = TRUE, sep = ",", 
+                stringsAsFactors = T)
+
+print("ORIGIN DATA")
+summary(cd1)
+```
+
