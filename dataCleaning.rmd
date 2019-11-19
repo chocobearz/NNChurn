@@ -1,0 +1,12 @@
+---
+title: "Data Cleaning"
+author: "Paige, Vicky, and Jackie"
+date: '2019-11-10'
+output: 
+  prettydoc::html_pretty:
+  theme : cayman
+  highlight : github
+  math: katex
+---
+
+
