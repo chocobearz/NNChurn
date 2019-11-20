@@ -33,7 +33,11 @@ summary(cd1)
 # Edit column names so that they are all lowercase
 colnames(cd1) <- map(colnames(cd1), tolower)
 
+#Data was taken at the middle of the month so replace NA, people who have not made first payemnt
+#with 0
 
+cd1$totalcharges[is.na(cd1$totalcharges)] <- 0
+  
 # update all factors containing "No internet service" to be part of the "No" level
 cd1[10:15] <- lapply(cd1[10:15], function(x) fct_collapse(x, No = c("No", "No internet service")) )
 
@@ -75,14 +79,15 @@ cd1%>%
               )
             )-> cd1
 
+cleanData <- subset(cd1, select = -customerid )
 
 print("TIDIED DATA")    
-summary(cd1)
+summary(cleanData)
 ```
 
 #Save data to csv for use in different methodologies
 
 ```{r}
-write.table(cd1, file = "cleanData.csv",row.names=FALSE, na="",col.names=TRUE, sep=",")
+write.table(cleanData, file = "cleanData.csv",row.names=FALSE, na="",col.names=TRUE, sep=",")
 ```
 
