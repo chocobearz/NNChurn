@@ -33,44 +33,6 @@ summary(cd)
 str(cd)
 ```
 
-```{r}
-mod = regsubsets(
-  churn ~ 
-    gender  +
-    seniorcitizen +
-    dependents +
-    partner +
-    tenure +
-    phoneservice +
-    multiplelines +
-    internetservice +
-    onlinebackup +
-    onlinesecurity +
-    deviceprotection +
-    techsupport +
-    streamingtv +
-    streamingmovies +
-    contract +
-    paperlessbilling +
-    monthlycharges +
-    totalcharges +
-    paymentmethod +
-    paymentmethodA +
-    paymentmethodB +
-    tenure4 +
-    tenure3, 
-  data = cd,
-  nbest = 10
-)
-mod.summary = summary(mod)
-
-which.max(mod.summary$adjr2)
-which.min(mod.summary$cp)
-which.min(mod.summary$bic)
-
-coef(mod, id = 81)
- 
-```
 
 ```{r}
 mod = regsubsets(
@@ -161,7 +123,7 @@ mod = regsubsets(
     paperlessbilling +
     monthlycharges +
     totalcharges +
-    paymentmethodA,
+    paymentmethod,
   data = cd,
   nbest = 10
 )
@@ -194,7 +156,7 @@ mod = regsubsets(
     paperlessbilling +
     monthlycharges +
     totalcharges +
-    paymentmethodA +
+    paymentmethodAuto +
     tenure3, 
   data = cd,
   nbest = 10
@@ -228,7 +190,7 @@ mod = regsubsets(
     paperlessbilling +
     monthlycharges +
     totalcharges +
-    paymentmethodA +
+    paymentmethodAuto +
     tenure4, 
   data = cd,
   nbest = 10
@@ -263,7 +225,7 @@ mod = regsubsets(
     paperlessbilling +
     monthlycharges +
     totalcharges +
-    paymentmethodB,
+    paymentmethodAuto,
   data = cd,
   nbest = 10
 )
@@ -276,76 +238,9 @@ which.min(mod.summary$bic)
 coef(mod, id = 71)
 ```
 
-```{r}
-mod = regsubsets(
-  churn ~ 
-    gender  +
-    seniorcitizen +
-    dependents +
-    partner +
-    phoneservice +
-    multiplelines +
-    internetservice +
-    onlinebackup +
-    onlinesecurity +
-    deviceprotection +
-    techsupport +
-    streamingtv +
-    streamingmovies +
-    contract +
-    paperlessbilling +
-    monthlycharges +
-    totalcharges +
-    paymentmethodB +
-    tenure3, 
-  data = cd,
-  nbest = 10
-)
-mod.summary = summary(mod)
-
-which.max(mod.summary$adjr2)
-which.min(mod.summary$cp)
-which.min(mod.summary$bic)
-
-coef(mod, id = 71)
-```
 
 ```{r}
-mod = regsubsets(
-  churn ~ 
-    gender  +
-    seniorcitizen +
-    dependents +
-    partner +
-    phoneservice +
-    multiplelines +
-    internetservice +
-    onlinebackup +
-    onlinesecurity +
-    deviceprotection +
-    techsupport +
-    streamingtv +
-    streamingmovies +
-    contract +
-    paperlessbilling +
-    monthlycharges +
-    totalcharges +
-    paymentmethodB +
-    tenure4, 
-  data = cd,
-  nbest = 10
-)
-mod.summary = summary(mod)
-
-which.max(mod.summary$adjr2)
-which.min(mod.summary$cp)
-which.min(mod.summary$bic)
-
-coef(mod, id = 71)
-```
-
-```{r}
-fit <- glm(churn ~ phoneservice + onlinesecurity + techsupport + contract + monthlycharges + totalcharges + tenure4 + tenure3, data = cd, family = "binomial")
+fit <- glm(churn ~ phoneservice + onlinesecurity + techsupport + contract + monthlycharges + totalcharges + tenure4, data = cd, family = "binomial")
 summary(fit)
 ```
 
