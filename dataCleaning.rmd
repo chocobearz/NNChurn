@@ -48,44 +48,32 @@ cd1%>%
   ) %>%
     # gather factors for payment into two levels, auto deposits and manual checks
     mutate(
-      paymentmethodA = fct_collapse(
+      paymentmethodAuto = fct_collapse(
         paymentmethod, 
         auto = c("bankTransfer", "creditCard"),
         check = c("electronicCheck", "mailedCheck")
-      )
+      ) 
     ) %>%
-      # gather factors for payments based on electronic or non electronic
-      mutate(
-        paymentmethodB = fct_collapse(
-          paymentmethod, 
-          electronic = c("bankTransfer", "creditCard", "electronicCheck"),
-          paper = c("mailedCheck")
-        )
-      ) %>%
-        # update customer ID to character 
+        # bin tenure into short term, mid range, and long term
         mutate(
-          customerid = as.character(customerid)
+          tenure3 = cut(
+            tenure, breaks = c(-Inf, 20, 60, Inf), labels = c("shortTerm", "midTerm", "longTerm")
+          )
         ) %>%
-          # bin tenure into short term, mid range, and long term
+          # bin tenure into quantiles
           mutate(
-            tenure3 = cut(
-              tenure, breaks = c(-Inf, 20, 60, Inf), labels = c("shortTerm", "midTerm", "longTerm")
+            tenure4 = cut(
+              tenure, breaks = c(-Inf, 9, 29, 55, Inf), labels = c("q1", "q2", "q3", "q4")
             )
           ) %>%
-            # bin tenure into quantiles
+            # update senior citizen as a factor with levels "Yes" and "No"
             mutate(
-              tenure4 = cut(
-                tenure, breaks = c(-Inf, 9, 29, 55, Inf), labels = c("q1", "q2", "q3", "q4")
-              )
-            ) %>%
-              # update senior citizen as a factor with levels "Yes" and "No"
-              mutate(
-                seniorcitizen = as.factor(
-                  sapply(
-                    seniorcitizen, function (x) ifelse(x == 0, "Yes", "No")
-                  )
+              seniorcitizen = as.factor(
+                sapply(
+                  seniorcitizen, function (x) ifelse(x == 0, "Yes", "No")
                 )
-              )-> cd1
+              )
+            )-> cd1
 
 
 print("TIDIED DATA")    
