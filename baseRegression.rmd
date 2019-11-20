@@ -20,74 +20,39 @@ cd <- read.csv(file = "cleanData.csv", header = TRUE, sep = ",",
 
 print("ORIGIN DATA")
 
-mutate(cd, customerid = as.character(customerid)) -> cd
-
 summary(cd)
-str(cd)
 ```
 
 ```{r}
-fit <- glm(churn ~ . -customerid, data = cd, family = "binomial")
+fit <- glm(churn ~ . -paymentmethodAuto -tenure3 -tenure4, data = cd, family = "binomial")
 summary(fit)
-library(ggfortify)
-autoplot(fit)
 ```
 
 ```{r}
-fit <- glm(churn ~ . -customerid -paymentmethodA -paymentmethodB -tenure3 -tenure4, data = cd, family = "binomial")
+fit <- glm(churn ~ . -tenure -paymentmethodAuto -tenure4, data = cd, family = "binomial")
 summary(fit)
-autoplot(fit)
-```
-
-
-```{r}
-fit <- glm(churn ~ . -customerid -tenure -paymentmethodA -paymentmethodB -tenure4, data = cd, family = "binomial")
-summary(fit)
-autoplot(fit)
 ```
 
 ```{r}
-fit <- glm(churn ~ . -customerid -tenure -paymentmethodA -paymentmethodB -tenure3, data = cd, family = "binomial")
+fit <- glm(churn ~ . -tenure -paymentmethodAuto -tenure3, data = cd, family = "binomial")
 summary(fit)
-autoplot(fit)
 ```
 
 ```{r}
-fit <- glm(churn ~ . -customerid -tenure -paymentmethod -paymentmethodB -tenure4, data = cd, family = "binomial")
+fit <- glm(churn ~ . -paymentmethod -tenure3 -tenure4, data = cd, family = "binomial")
 summary(fit)
-autoplot(fit)
 ```
 
 ```{r}
-fit <- glm(churn ~ . -customerid -tenure -paymentmethod -paymentmethodB -tenure3, data = cd, family = "binomial")
+fit <- glm(churn ~ . -tenure -paymentmethod -tenure4, data = cd, family = "binomial")
 summary(fit)
-autoplot(fit)
 ```
 
 ```{r}
-fit <- glm(churn ~ . -customerid -paymentmethod -paymentmethodB -tenure3 -tenure4, data = cd, family = "binomial")
+fit <- glm(churn ~ . -tenure -paymentmethod -tenure3, data = cd, family = "binomial")
 summary(fit)
-autoplot(fit)
 ```
 
-
-```{r}
-fit <- glm(churn ~ . -customerid -tenure -paymentmethodA -tenure3, data = cd, family = "binomial")
-summary(fit)
-autoplot(fit)
-```
-
-```{r}
-fit <- glm(churn ~ . -customerid -tenure -paymentmethod -paymentmethodA -tenure3, data = cd, family = "binomial")
-summary(fit)
-autoplot(fit)
-```
-
-```{r}
-fit <- glm(churn ~ . -customerid -paymentmethod -paymentmethodA -tenure3 -tenure4, data = cd, family = "binomial")
-summary(fit)
-autoplot(fit)
-```
 
 #We need something better for this
 ```{r}
