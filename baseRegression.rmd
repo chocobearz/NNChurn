@@ -26,31 +26,39 @@ summary(cd)
 ```{r}
 fit <- glm(churn ~ . -paymentmethodAuto -tenure3 -tenure4, data = cd, family = "binomial")
 summary(fit)
+BIC(fit)
 ```
+Lowest AIC
 
 ```{r}
 fit <- glm(churn ~ . -tenure -paymentmethodAuto -tenure4, data = cd, family = "binomial")
 summary(fit)
+BIC(fit)
 ```
 
 ```{r}
 fit <- glm(churn ~ . -tenure -paymentmethodAuto -tenure3, data = cd, family = "binomial")
 summary(fit)
+BIC(fit)
 ```
 
 ```{r}
 fit <- glm(churn ~ . -paymentmethod -tenure3 -tenure4, data = cd, family = "binomial")
 summary(fit)
+BIC(fit)
 ```
+Lowest BIC 
 
 ```{r}
 fit <- glm(churn ~ . -tenure -paymentmethod -tenure4, data = cd, family = "binomial")
 summary(fit)
+BIC(fit)
 ```
 
 ```{r}
 fit <- glm(churn ~ . -tenure -paymentmethod -tenure3, data = cd, family = "binomial")
 summary(fit)
+BIC(fit)
 ```
 
 

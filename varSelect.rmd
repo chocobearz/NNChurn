@@ -148,6 +148,23 @@ print(mod.summary$bic[71])
 
 this one has the lowest cp mallow
 
+```{r}
+fit <- glm(
+  churn ~
+    phoneservice + 
+    onlinesecurity +
+    techsupport +
+    contract +
+    monthlycharges + 
+    totalcharges +
+    paymentmethod,
+  data = cd, 
+  family = "binomial"
+)
+summary(fit)
+BIC(fit)
+```
+
 
 ```{r}
 mod = regsubsets(
@@ -242,6 +259,7 @@ fit <- glm(
   family = "binomial"
 )
 summary(fit)
+BIC(fit)
 ```
 
 
@@ -282,4 +300,194 @@ print(mod.summary$cp[71])
 print(mod.summary$bic[71])
 ```
 
+# try selection
 
+```{r}
+library(MASS)
+library(stats4)
+
+mfit_null  = glm(churn~1, data=cd, family = "binomial")
+mfit_full  = glm(
+    churn ~ 
+    gender  +
+    seniorcitizen +
+    dependents +
+    partner +
+    phoneservice +
+    multiplelines +
+    internetservice +
+    onlinebackup +
+    onlinesecurity +
+    deviceprotection +
+    techsupport +
+    streamingtv +
+    streamingmovies +
+    contract +
+    paperlessbilling +
+    monthlycharges +
+    totalcharges +
+    paymentmethodAuto +
+    tenure4, 
+  data = cd,
+  family = "binomial"
+)
+step <- step(mfit_null, data=cd, scope=list(upper=mfit_full), direction="both")
+step
+BIC(step)
+```
+
+```{r}
+mfit_null  = glm(churn~1, data=cd, family = "binomial")
+mfit_full  = glm(
+    churn ~ 
+    gender  +
+    seniorcitizen +
+    dependents +
+    partner +
+    phoneservice +
+    multiplelines +
+    internetservice +
+    onlinebackup +
+    onlinesecurity +
+    deviceprotection +
+    techsupport +
+    streamingtv +
+    streamingmovies +
+    contract +
+    paperlessbilling +
+    monthlycharges +
+    totalcharges +
+    paymentmethodAuto +
+    tenure3, 
+  data = cd,
+  family = "binomial"
+)
+step <- step(mfit_null, data=cd, scope=list(upper=mfit_full), direction="both")
+step
+BIC(step)
+```
+
+```{r}
+mfit_null  = glm(churn~1, data=cd, family = "binomial")
+mfit_full  = glm(
+    churn ~ 
+    gender  +
+    seniorcitizen +
+    dependents +
+    partner +
+    phoneservice +
+    multiplelines +
+    internetservice +
+    onlinebackup +
+    onlinesecurity +
+    deviceprotection +
+    techsupport +
+    streamingtv +
+    streamingmovies +
+    contract +
+    paperlessbilling +
+    monthlycharges +
+    totalcharges +
+    paymentmethodAuto +
+    tenure, 
+  data = cd,
+  family = "binomial"
+)
+step <- step(mfit_null, data=cd, scope=list(upper=mfit_full), direction="both")
+step
+BIC(step)
+```
+Lowest BIC
+```{r}
+mfit_null  = glm(churn~1, data=cd, family = "binomial")
+mfit_full  = glm(
+    churn ~ 
+    gender  +
+    seniorcitizen +
+    dependents +
+    partner +
+    phoneservice +
+    multiplelines +
+    internetservice +
+    onlinebackup +
+    onlinesecurity +
+    deviceprotection +
+    techsupport +
+    streamingtv +
+    streamingmovies +
+    contract +
+    paperlessbilling +
+    monthlycharges +
+    totalcharges +
+    paymentmethod +
+    tenure4, 
+  data = cd,
+  family = "binomial"
+)
+step <- step(mfit_null, data=cd, scope=list(upper=mfit_full), direction="both")
+step
+BIC(step)
+```
+
+```{r}
+mfit_null  = glm(churn~1, data=cd, family = "binomial")
+mfit_full  = glm(
+    churn ~ 
+    gender  +
+    seniorcitizen +
+    dependents +
+    partner +
+    phoneservice +
+    multiplelines +
+    internetservice +
+    onlinebackup +
+    onlinesecurity +
+    deviceprotection +
+    techsupport +
+    streamingtv +
+    streamingmovies +
+    contract +
+    paperlessbilling +
+    monthlycharges +
+    totalcharges +
+    paymentmethod +
+    tenure, 
+  data = cd,
+  family = "binomial"
+)
+step <- step(mfit_null, data=cd, scope=list(upper=mfit_full), direction="both")
+step
+BIC(step)
+```
+lowest AIC
+
+```{r}
+mfit_null  = glm(churn~1, data=cd, family = "binomial")
+mfit_full  = glm(
+    churn ~ 
+    gender  +
+    seniorcitizen +
+    dependents +
+    partner +
+    phoneservice +
+    multiplelines +
+    internetservice +
+    onlinebackup +
+    onlinesecurity +
+    deviceprotection +
+    techsupport +
+    streamingtv +
+    streamingmovies +
+    contract +
+    paperlessbilling +
+    monthlycharges +
+    totalcharges +
+    paymentmethod +
+    tenure3, 
+  data = cd,
+  family = "binomial"
+)
+step <- step(mfit_null, data=cd, scope=list(upper=mfit_full), direction="both")
+step
+BIC(step)
+```
