@@ -1,0 +1,54 @@
+TO DO:
+1.Check why we get negative BIC for regsubsets (approx -2000), but then when we run the model and do BIC we get a positive(approx 6000), is it because only some categories of each variable are used?
+2.see if we can make plots to show correlation between individual variables and CHURN
+3. From these selected models train data and then use confusion matrix to get classification error
+4. From lowest classification error we will test model assumptions
+5. LDA
+6. NN
+
+
+Model selected by stepwise (stepwise uses AIC, and this model has lowest AIC of all choosen models)
+contract + internetservice + tenure + paymentmethod + paperlessbilling + onlinesecurity + totalcharges + phoneservice + techsupport + monthlycharges + onlinebackup + seniorcitizen + multiplelines + dependents + deviceprotection
+
+AIC = 5872
+BIC = 6009.115
+
+
+Model selected by stepwise (stepwise uses AIC, and this model has lowest BIC of all choosen models)
+contract + internetservice + tenure + paperlessbilling + streamingmovies + onlinesecurity + techsupport + totalcharges + paymentmethodAuto + multiplelines + seniorcitizen + streamingtv + monthlycharges + dependents
+
+AIC: 5879
+BIC: 5995.558
+
+
+Model Selected by all regression for BIC/adjR
+phoneserviceYes + onlinesecurityYes + techsupportYes + contractoneYear + contracttwoYear + monthlycharges + totalcharges + tenure4q2
+
+adjr = 0.2763055
+Cp mallo = 160.4993
+bic = -2205.875
+AIC: 5954.142 
+BIC: 6029.6 (from model with all categories after glm)
+
+Model selected by all regression for CP mallo
+phoneserviceYes +onlinesecurityYes + techsupportYes + contractoneYear + contracttwoYear + monthlycharges + totalcharges + paymentmethodelectronicCheck 
+
+adjr = 0.2731872
+cp mallo = 93.45881
+bic = -2175.592
+AIC: 6028
+BIC: 6103.419 (from model with all categories after glm)
+
+
+Full regression by BIC
+full model with continuous tenure and paymentmethodAuto
+
+AIC: 5887.1
+BIC: 6037.984
+
+
+Full regression by AIC
+full model continuous tenure and paymentmethod
+
+AIC: 5876.3
+BIC: 6040.919
