@@ -27,10 +27,7 @@ cd <- read.csv(file = "cleanData.csv", header = TRUE, sep = ",",
 
 print("ORIGIN DATA")
 
-mutate(cd, customerid = as.character(customerid)) -> cd
-
 summary(cd)
-str(cd)
 ```
 
 
@@ -66,7 +63,13 @@ which.min(mod.summary$cp)
 which.min(mod.summary$bic)
 
 coef(mod, id = 71)
+
+print(mod.summary$adjr2[71])
+print(mod.summary$cp[71])
+print(mod.summary$bic[71])
 ```
+
+tied for highest adjr
 
 ```{r}
 mod = regsubsets(
@@ -100,7 +103,11 @@ which.min(mod.summary$cp)
 which.min(mod.summary$bic)
 
 coef(mod, id = 71)
+print(mod.summary$adjr2[71])
+print(mod.summary$cp[71])
+print(mod.summary$bic[71])
 ```
+
 
 ```{r}
 mod = regsubsets(
@@ -134,7 +141,13 @@ which.min(mod.summary$cp)
 which.min(mod.summary$bic)
 
 coef(mod, id = 71)
+print(mod.summary$adjr2[71])
+print(mod.summary$cp[71])
+print(mod.summary$bic[71])
 ```
+
+this one has the lowest cp mallow
+
 
 ```{r}
 mod = regsubsets(
@@ -168,7 +181,12 @@ which.min(mod.summary$cp)
 which.min(mod.summary$bic)
 
 coef(mod, id = 71)
+print(mod.summary$adjr2[71])
+print(mod.summary$cp[71])
+print(mod.summary$bic[71])
 ```
+
+
 
 ```{r}
 mod = regsubsets(
@@ -202,7 +220,30 @@ which.min(mod.summary$cp)
 which.min(mod.summary$bic)
 
 coef(mod, id = 71)
+print(mod.summary$adjr2[71])
+print(mod.summary$cp[71])
+print(mod.summary$bic[71])
 ```
+
+This one has the lowest bic
+tied for highest adjr
+
+```{r}
+fit <- glm(
+  churn ~
+    phoneservice + 
+    onlinesecurity +
+    techsupport +
+    contract +
+    monthlycharges + 
+    totalcharges +
+    tenure4,
+  data = cd, 
+  family = "binomial"
+)
+summary(fit)
+```
+
 
 ```{r}
 mod = regsubsets(
@@ -236,11 +277,9 @@ which.min(mod.summary$cp)
 which.min(mod.summary$bic)
 
 coef(mod, id = 71)
+print(mod.summary$adjr2[71])
+print(mod.summary$cp[71])
+print(mod.summary$bic[71])
 ```
 
-
-```{r}
-fit <- glm(churn ~ phoneservice + onlinesecurity + techsupport + contract + monthlycharges + totalcharges + tenure4, data = cd, family = "binomial")
-summary(fit)
-```
 
