@@ -1,0 +1,85 @@
+---
+title: "Correlation plot"
+author: "Paige, Vicky, and Jackie"
+date: '2019-11-10'
+output: 
+  prettydoc::html_pretty:
+  theme : cayman
+  highlight : github
+  math: katex
+---
+
+# Loading libraries
+```{r}
+library(ggplot2)
+library(reshape2) # Used for the melt function
+```
+
+#load data
+
+```{r}
+library(dplyr)# Load the data
+cd <- read.csv(file = "cleanData.csv", header = TRUE, sep = ",", 
+                stringsAsFactors = T)
+
+print("ORIGIN DATA")
+
+summary(cd)
+```
+
+# Getting correlations
+```{r}
+# Method used to get 'correlation' for categorical variables
+# https://datascience.stackexchange.com/questions/893/how-to-get-correlation-between-two-categorical-variable-and-a-categorical-variab#898
+
+# All column types in cd are either factors (categorical), 
+# or numerical (including integers)
+unlist(lapply(cd, class))
+
+# Calculate correlation for dataframe with categorical and numerical variables
+categorical_cor <- function(column1, column2){
+    if( class(column1) == "factor" &&
+        (class(column2) == "numerical" || class(column2) == "integer")
+    ){ # Swap the columns
+        temp_column = column1
+        column1 = column2
+        column2 = temp_column
+        rm(temp_column)
+    } # Columns should be numerical/integer, then factor
+    if( # Use chi squared if class(column) == factor for both
+        (class(column1) == "factor") &&
+        (class(column2) == "factor")
+    ){
+        # Not sure if correct needs to be equal to F, but the link shows it
+        return(chisq.test(column1, column2, correct = F)$p.value)
+    }
+    else if( # Use corr if class(column) == numerical or integer for both
+        ( (class(column1) == "numerical") ||
+        (class(column1) == "integer") ) &&
+        ( (class(column2) == "numerical") ||
+        (class(column2) == "integer") )
+    ){
+        cor(cd$tenure, cd$monthlycharges)
+    }
+    else if(
+        (class(column1) == "numerical" || class(column1) == "integer") &&
+        class(column2) == "factor"
+    ){
+        summary_table <- summary(aov(column1 ~ column2))
+        return(summary_table[[1]][[5]][1]) # This should return the p-value
+    }
+    else{
+        return("error, class(column) must be factor, numerical, or integer")
+    }
+}
+
+# Use summary(aov(col1 ~ col2, cd)) if class(column) is different for both
+```
+
+# Create correlation plot matrix
+```{r}
+ggplot(data = cd, aes = (x = ))
+```
+
+
+
