@@ -9,26 +9,112 @@ output:
   math: katex
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
+library(dplyr)# Load the data
+cd <- read.csv(file = "cleanData.csv", header = TRUE, sep = ",", 
+                stringsAsFactors = T)
+
+print("ORIGIN DATA")
+
+summary(cd)
 ```
 
-## R Markdown
+```{r}
+fit <- glm(churn ~ contract + internetservice + tenure + paymentmethod + paperlessbilling + onlinesecurity + totalcharges + phoneservice + techsupport + monthlycharges + onlinebackup + seniorcitizen + multiplelines + dependents + deviceprotection, data = cd, family = "binomial")
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+glm_probs <- predict(fit, type = "response")
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+glm_preds <- rep("No", length(glm_probs))
 
-```{r cars}
-summary(cars)
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = cd$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((4635 + 1032) / (nrow(cd)), digits = 3)
+
 ```
 
-## Including Plots
+```{r}
+fit <- glm(churn ~ contract + internetservice + tenure + paperlessbilling + streamingmovies + onlinesecurity + techsupport + totalcharges + paymentmethodAuto + multiplelines + seniorcitizen + streamingtv + monthlycharges + dependents, data = cd, family = "binomial")
 
-You can also embed plots, for example:
+glm_probs <- predict(fit, type = "response")
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+glm_preds <- rep("No", length(glm_probs))
+
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = cd$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((4642 + 1029) / (nrow(cd)), digits = 3)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+fit <- glm(churn ~ phoneservice + onlinesecurity + techsupport + contract + contract + monthlycharges + totalcharges + tenure4, data = cd, family = "binomial")
+
+glm_probs <- predict(fit, type = "response")
+
+glm_preds <- rep("No", length(glm_probs))
+
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = cd$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((4707 + 905) / (nrow(cd)), digits = 3)
+```
+Lowest type 1 error
+
+```{r}
+fit <- glm(churn ~ phoneservice +onlinesecurity + techsupport + contract + contract + monthlycharges + totalcharges + paymentmethod, data = cd, family = "binomial")
+
+glm_probs <- predict(fit, type = "response")
+
+glm_preds <- rep("No", length(glm_probs))
+
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = cd$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((4628 + 962) / (nrow(cd)), digits = 3)
+```
+
+```{r}
+fit <- glm(churn ~ . -tenure4 -tenure3 -paymentmethod, data = cd, family = "binomial")
+
+glm_probs <- predict(fit, type = "response")
+
+glm_preds <- rep("No", length(glm_probs))
+
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = cd$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((4637 + 1030) / (nrow(cd)), digits = 3)
+```
+
+```{r}
+fit <- glm(churn ~ . -tenure4 -tenure3 -paymentmethodAuto, data = cd, family = "binomial")
+
+glm_probs <- predict(fit, type = "response")
+
+glm_preds <- rep("No", length(glm_probs))
+
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = cd$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((4650 + 1035) / (nrow(cd)), digits = 3)
+```
+
+lowest type 2 error
