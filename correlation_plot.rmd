@@ -61,23 +61,31 @@ categorical_cor <- function(column1, column2){
     ){
         cor(cd$tenure, cd$monthlycharges)
     }
-    else if(
+    else if( # Use the p-value from aov if the columns are a mix
         (class(column1) == "numerical" || class(column1) == "integer") &&
         class(column2) == "factor"
     ){
         summary_table <- summary(aov(column1 ~ column2))
         return(summary_table[[1]][[5]][1]) # This should return the p-value
     }
-    else{
+    else{ # Return this message if at least one of the columns
+        # is a different class than factor, numerical or integer
         return("error, class(column) must be factor, numerical, or integer")
     }
 }
 
-# Use summary(aov(col1 ~ col2, cd)) if class(column) is different for both
+# Create an empty data frame to store all the correlation values
+cd.cor <- cbind(expand.grid("Column 1" = colnames(cd), 
+                            "Column 2" = colnames(cd)), "Corr" = 0)
+# Add the correlation values
+# Find a way to fill the "Corr" column with values from the custom function
+
 ```
 
 # Create correlation plot matrix
 ```{r}
+# Heatmap code from the link below
+# http://www.sthda.com/english/wiki/ggplot2-quick-correlation-matrix-heatmap-r-software-and-data-visualization
 ggplot(data = cd, aes = (x = ))
 ```
 
