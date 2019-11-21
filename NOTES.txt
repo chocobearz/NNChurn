@@ -1,7 +1,6 @@
 TO DO:
 1.Check why we get negative BIC for regsubsets (approx -2000), but then when we run the model and do BIC we get a positive(approx 6000), is it because only some categories of each variable are used?
 2.see if we can make plots to show correlation between individual variables and CHURN
-3. From these selected models train data and then use confusion matrix to get classification error
 4. From lowest classification error we will test model assumptions
 5. LDA
 6. NN
