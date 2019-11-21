@@ -117,4 +117,5 @@ xtabs(~ predicted + Churn, data = cd1)
 round((4650 + 1035) / (nrow(cd)), digits = 3)
 ```
 
-lowest type 2 error
+lowest type 2 error 
+highest overall correct classifications
