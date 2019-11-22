@@ -1,11 +1,6 @@
 import pandas as pd
 import numpy as np
 
-#random seeds for stochastic parts of neural network 
-np.random.seed(10)
-from tensorflow import set_random_seed
-set_random_seed(15)
-
 from sklearn.model_selection import train_test_split
 from keras.models import Model, Sequential
 from keras.layers import Input, Dense, Concatenate, Reshape, Dropout
