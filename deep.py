@@ -19,8 +19,28 @@ def cramers_v(x, y):
   kcorr = k-((k-1)**2)/(n-1)
   return np.sqrt(phi2corr/min((kcorr-1),(rcorr-1)))
 
+#correlation ratio to find association between numeric and categroical variable
+def correlation_ratio(categories, measurements):
+    fcat, _ = pd.factorize(categories)
+    cat_num = np.max(fcat)+1
+    y_avg_array = np.zeros(cat_num)
+    n_array = np.zeros(cat_num)
+    for i in range(0,cat_num):
+        cat_measures = measurements[np.argwhere(fcat == i).flatten()]
+        n_array[i] = len(cat_measures)
+        y_avg_array[i] = np.average(cat_measures)
+    y_total_avg = np.sum(np.multiply(y_avg_array,n_array))/np.sum(n_array)
+    numerator = np.sum(np.multiply(n_array,np.power(np.subtract(y_avg_array,y_total_avg),2)))
+    denominator = np.sum(np.power(np.subtract(measurements,y_total_avg),2))
+    if numerator == 0:
+        eta = 0.0
+    else:
+        eta = np.sqrt(numerator/denominator)
+    return eta
+
 cd = pd.read_csv("cleanData.csv")
 
+#build correlation matrix
 columns = cd.columns
 numeric_columns = ["tenure", "monthlycharges", "totalcharges"]
 corr = pd.DataFrame(index=columns, columns=columns)
@@ -35,12 +55,12 @@ for i in range(0,len(columns)):
           corr[columns[i]][columns[j]] = cell
           corr[columns[j]][columns[i]] = cell
         else:
-          cell = round((ss.f_oneway(cd[columns[i]], cd[columns[j]])[1]),4)
+          cell = round(correlation_ratio(cd[columns[i]], cd[columns[j]]),4)
           corr[columns[i]][columns[j]] = cell
           corr[columns[j]][columns[i]] = cell
       else:
         if columns[j] not in numeric_columns:
-          cell = round((ss.f_oneway(cd[columns[j]], cd[columns[i]])[1]),4)
+          cell = round(correlation_ratio(cd[columns[j]], cd[columns[i]]),4)
           corr[columns[i]][columns[j]] = cell
           corr[columns[j]][columns[i]] = cell
         else:
@@ -50,13 +70,14 @@ for i in range(0,len(columns)):
 
 corr = corr[corr.columns].astype(float)
 
+#plot correlation matrix
 sns.heatmap(
   corr, 
   xticklabels=corr.columns.values,
   yticklabels=corr.columns.values
 )
 
-plt.savefig('corr2.png')
+plt.savefig('corr.png')
 
 
 
