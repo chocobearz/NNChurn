@@ -15,6 +15,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 categorical_vars = ["internetservice", "contract", "paymentmethod"]
+models = []
 
 for categorical_var in categorical_vars :   
   model = Sequential()
