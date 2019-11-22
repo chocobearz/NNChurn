@@ -1,14 +1,26 @@
-from keras.models import Sequential
-from keras.layers import Dense
-import pandas as pd
+#from keras.models import Sequential
+#from keras.layers import Dense
+#import pandas as pd
+from sklearn.model_selection import train_test_split
 
 cd = pd.read_csv("NNdata.csv")
 
-categorical_vars = cd[["internetservice", "contract", "paymentmethod"]]
+X_train, X_test, y_train, y_test = train_test_split(
+    cd.loc[:, cd.columns != 'churn'],
+    cd["churn"],
+    test_size=0.33,
+    random_state=42
+)
+
+print(X_train)
+exit(0)
+
+categorical_vars = ["internetservice", "contract", "paymentmethod"]
+
 
 for categorical_var in categorical_vars :   
   model = Sequential()
-  no_of_unique_cat  = df_train[categorical_var].nunique()
+  no_of_unique_cat  = X_train[categorical_var].nunique()
   embedding_size = min(np.ceil((no_of_unique_cat)/2), 50 )
   embedding_size = int(embedding_size)
   vocab  = no_of_unique_cat+1
