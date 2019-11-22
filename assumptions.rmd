@@ -9,26 +9,86 @@ output:
   math: katex
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
+library(dplyr)# Load the data
+cd <- read.csv(file = "cleanData.csv", header = TRUE, sep = ",", 
+                stringsAsFactors = T)
+
+print("ORIGIN DATA")
+
+summary(cd)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r}
+fit <- glm(churn ~ . -tenure4 -tenure3 -paymentmethodAuto, data = cd, family = "binomial")
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
 ```
 
-## Including Plots
+```{r}
+library(dvmisc)
+# OLS residuals
+OLS_Residuals = fit$residuals
 
-You can also embed plots, for example:
+# Standardized Resiudals
+summary_table <- summary(fit)
+MSE_hat <- get_mse(fit)
+Standardized_Residuals = OLS_Residuals/sqrt(MSE_hat)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+# Studentized Residuals
+# Studentized_Residuals = MASS::studres(DT_model) # this is not Studentized Residuals!!!
+Studentized_Residuals = rstandard(fit)
+
+# R-Student Residuals
+rStu_Res = rstudent(fit)
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+par(mfrow=c(2,2))
+hist(OLS_Residuals, xlab='OLS Residuals', col='blue', xlim=c(-22,-0), ylim=c(0,6000), main='OLS Residuals', cex.main = 2)
+hist(OLS_Residuals, xlab='OLS Residuals', col='blue', xlim=c(0,20),   ylim=c(0,2000), main='OLS Residuals', cex.main = 2)
+hist(OLS_Residuals, xlab='OLS Residuals', col='blue', xlim=c(20,45),   ylim=c(0,25), main='OLS Residuals', cex.main = 2)
+hist(OLS_Residuals, xlab='OLS Residuals', col='blue', xlim=c(40,400),   ylim=c(0,9), main='OLS Residuals', cex.main = 2)
+hist(Standardized_Residuals, xlab='OLS Residuals', col='blue', xlim=c(-6,-0), ylim=c(0,5000), main='OLS Residuals', cex.main = 2)
+hist(Standardized_Residuals, xlab='OLS Residuals', col='blue', xlim=c(0,6),   ylim=c(0,2000), main='OLS Residuals', cex.main = 2)
+hist(Standardized_Residuals, xlab='OLS Residuals', col='blue', xlim=c(5,50),   ylim=c(0,13), main='OLS Residuals', cex.main = 2)
+hist(Studentized_Residuals, xlab='Studentized Residuals', col='blue', main='Studentized Residuals', cex.main = 2)
+hist(rStu_Res, xlab='R-Student Residuals', col='blue', main='R-Student Residuals', cex.main = 2)
+```
+
+
+```{r}
+# Check for normality with Normal Probability plot (Q-Q plot)
+par(mfrow=c(2,2))
+library(e1071)
+e1071::probplot(OLS_Residuals, qnorm, xlab='OLS Residuals', ylab='Percent')
+e1071::probplot(Standardized_Residuals, qnorm, xlab='Standardized Residuals', ylab='Percent')
+e1071::probplot(Studentized_Residuals, qnorm, xlab='Studentized Residuals', ylab='Percent')
+e1071::probplot(rStu_Res, qnorm, xlab='R-Student Residuals', ylab='Percent')
+```
+
+```{r}
+yhat = fit$fitted.values
+
+par(mfrow=c(2,2))
+plot(yhat, OLS_Residuals, ylab='OLS Residuals', xlab='Fitted Values', main='OLS Residuals', pch=16)
+abline(h=0)
+
+plot(yhat, Standardized_Residuals, ylab='Standardized Residuals', xlab='Fitted Values', main='Standardized Residuals', pch=16)
+abline(h=0)
+
+plot(yhat, Studentized_Residuals, ylab='Studentized Residuals', xlab='Fitted Values', main='Studentized Residuals', pch=16)
+abline(h=0)
+
+plot(yhat, rStu_Res, ylab='R-Student Residuals', xlab='Fitted Values', main='R-Studentized Residuals', pch=16)
+abline(h=0)
+
+par(mfrow=c(1,1))
+plot(fit)
+
+par(mfrow=c(2,2))
+plot(fit)
+```
+
