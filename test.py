@@ -1,5 +1,6 @@
-import numpy as np
 import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
 from keras.models import Model
 from keras.layers import Input, Dense, Concatenate, Reshape, Dropout
 from keras.layers.embeddings import Embedding
@@ -21,7 +22,7 @@ for categorical_var in categorical_vars :
   embedding_size = min(np.ceil((no_of_unique_cat)/2), 50 )
   embedding_size = int(embedding_size)
   vocab  = no_of_unique_cat+1
-  model.add( Embedding(no_of_unique_cat ,embedding_size, input_length = 1 ))
+  model.add( Embedding(vocab ,embedding_size, input_length = 1 ))
   model.add(Reshape(target_shape=(embedding_size,)))
   models.append( model )
 
