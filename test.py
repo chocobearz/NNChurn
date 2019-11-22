@@ -97,7 +97,7 @@ for i, (f_ind, outf_ind) in enumerate(kfold.split(X_train, y_train)):
     for j in range(runs_per_fold):
     
         NN = build_embedding_network()
-        NN.fit(proc_X_train_f, y_train_f.values, epochs=n_epochs, batch_size=4096, verbose=0)
+        NN.fit(X_train_f, y_train_f.values, epochs=n_epochs, batch_size=4096, verbose=0)
    
         val_preds += NN.predict(proc_X_val_f)[:,0] / runs_per_fold
         y_preds[:,i] += NN.predict(proc_X_test_f)[:,0] / runs_per_fold
