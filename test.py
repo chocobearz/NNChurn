@@ -2,7 +2,7 @@
 #from keras.layers import Dense
 import pandas as pd
 
-cd = pd.read_csv("NNData.csv")
+cd = pd.read_csv("NNdata.csv")
 
 categoricalVars = cd["internetservice", "contract", "paymentmethod"]
 
