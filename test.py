@@ -1,11 +1,5 @@
 import numpy as np
 import pandas as pd
-
-#random seeds for stochastic parts of neural network 
-np.random.seed(10)
-from tensorflow import set_random_seed
-set_random_seed(15)
-
 from keras.models import Model
 from keras.layers import Input, Dense, Concatenate, Reshape, Dropout
 from keras.layers.embeddings import Embedding
