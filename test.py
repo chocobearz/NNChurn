@@ -14,23 +14,40 @@ X_train, X_test, y_train, y_test = train_test_split(
     random_state=42
 )
 
-categorical_vars = ["internetservice", "contract", "paymentmethod"]
-models = []
+#def build_embedding_network():
+    
+inputs = []
+embeddings = []
 
-for categorical_var in categorical_vars :   
-  model = Sequential()
-  no_of_unique_cat  = X_train[categorical_var].nunique()
-  embedding_size = min(np.ceil((no_of_unique_cat)/2), 50 )
-  embedding_size = int(embedding_size)
-  vocab  = no_of_unique_cat+1
-  model.add( Embedding(vocab ,embedding_size, input_length = 1 ))
-  model.add(Reshape(target_shape=(embedding_size,)))
-  models.append( model )
+internetservice = Input(shape=(1,))
 
-print(model)
+print(internetservice)
 exit(0)
-model_rest = Sequential()
-model_rest.add(Dense(16, input_dim= 1 ))
-models.append(model_rest)
+embedding = Embedding(3, 2, input_length=1)(internetservice)
+embedding = Reshape(target_shape=(2,))(embedding)
+inputs.append(input_ps_ind_02_cat)
+embeddings.append(embedding)
+contract = Input(shape=(1,))
+embedding = Embedding(3, 2, input_length=1)(internetservice)
+embedding = Reshape(target_shape=(2,))(embedding)
+inputs.append(input_ps_ind_02_cat)
+embeddings.append(embedding)
+paymentmethod = Input(shape=(1,))
+embedding = Embedding(4, 2, input_length=1)(internetservice)
+embedding = Reshape(target_shape=(2,))(embedding)
+inputs.append(input_ps_ind_02_cat)
+embeddings.append(embedding)
+input_numeric = Input(shape=(16,))
+embedding_numeric = Dense(16)(input_numeric) 
+inputs.append(input_numeric)
+embeddings.append(embedding_numeric)
 
-full_model.add(Merge(models, mode='concat'))
+
+#x = Concatenate()(embeddings)
+#    x = Dense(80, activation='relu')(x)
+#    x = Dropout(.35)(x)
+#    x = Dense(20, activation='relu')(x)
+#    x = Dropout(.15)(x)
+#    x = Dense(10, activation='relu')(x)
+#    x = Dropout(.15)(x)
+#    output = Dense(1, activation='sigmoid')(x)
