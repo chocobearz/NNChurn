@@ -6,7 +6,6 @@ cd = pd.read_csv("NNdata.csv")
 
 categoricalVars = cd[["internetservice", "contract", "paymentmethod"]]
 
-exit(0)
 for categoical_var in categoical_vars :   
   model = Sequential()
   no_of_unique_cat  = df_train[categorical_var].nunique()
@@ -17,6 +16,7 @@ for categoical_var in categoical_vars :
   model.add(Reshape(target_shape=(embedding_size,)))
   models.append( model )
 
+exit(0)
 model_rest = Sequential()
 model_rest.add(Dense(16, input_dim= 1 ))
 models.append(model_rest)
