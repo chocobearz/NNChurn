@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from keras.models import Model
+from keras.models import Model, Sequential
 from keras.layers import Input, Dense, Concatenate, Reshape, Dropout
 from keras.layers.embeddings import Embedding
 
