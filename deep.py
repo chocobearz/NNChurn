@@ -45,20 +45,20 @@ for i in range(0,len(columns)):
     else:
       if columns[i] not in numeric_columns:
         if columns[j] not in numeric_columns:
-          cell = round(cramers_v(cd[columns[i]], cd[columns[j]]), 4)
+          cell = float(round(cramers_v(cd[columns[i]], cd[columns[j]]), 4))
           corr[columns[i]][columns[j]] = cell
           corr[columns[j]][columns[i]] = cell
         else:
-          cell = round(correlation_ratio(cd[columns[i]], cd[columns[j]]),4)
+          cell = float(round(correlation_ratio(cd[columns[i]], cd[columns[j]]),4))
           corr[columns[i]][columns[j]] = cell
           corr[columns[j]][columns[i]] = cell
       else:
         if columns[j] not in numeric_columns:
-          cell = round(correlation_ratio(cd[columns[j]], cd[columns[i]]),4)
+          cell = float(round(correlation_ratio(cd[columns[j]], cd[columns[i]]),4))
           corr[columns[i]][columns[j]] = cell
           corr[columns[j]][columns[i]] = cell
         else:
-          cell = round((ss.pearsonr(cd[columns[i]], cd[columns[j]])[0]), 4)
+          cell = float(round((ss.pearsonr(cd[columns[i]], cd[columns[j]])[0]), 4))
           corr[columns[i]][columns[j]] = cell
           corr[columns[j]][columns[i]] = cell
 
