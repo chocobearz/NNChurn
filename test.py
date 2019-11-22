@@ -1,8 +1,14 @@
-from keras.models import Sequential
-from keras.layers import Dense
-import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
+import pandas as pd
+
+#random seeds for stochastic parts of neural network 
+np.random.seed(10)
+from tensorflow import set_random_seed
+set_random_seed(15)
+
+from keras.models import Model
+from keras.layers import Input, Dense, Concatenate, Reshape, Dropout
+from keras.layers.embeddings import Embedding
 
 cd = pd.read_csv("NNdata.csv")
 
@@ -21,7 +27,7 @@ for categorical_var in categorical_vars :
   embedding_size = min(np.ceil((no_of_unique_cat)/2), 50 )
   embedding_size = int(embedding_size)
   vocab  = no_of_unique_cat+1
-  model.add( Embedding(vocab ,embedding_size, input_length = 1 ))
+  model.add( Embedding(no_of_unique_cat ,embedding_size, input_length = 1 ))
   model.add(Reshape(target_shape=(embedding_size,)))
   models.append( model )
 
