@@ -4,7 +4,7 @@ import pandas as pd
 
 cd = pd.read_csv("NNdata.csv")
 
-categoricalVars = cd[["internetservice", "contract", "paymentmethod"]]
+categorical_vars = cd[["internetservice", "contract", "paymentmethod"]]
 
 for categoical_var in categoical_vars :   
   model = Sequential()
