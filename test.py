@@ -91,9 +91,6 @@ for i, (f_ind, outf_ind) in enumerate(kfold.split(X_train, y_train)):
     X_train_f = X_train_f.iloc[idx]
     y_train_f = y_train_f.iloc[idx]
     
-    #preprocessing
-    proc_X_train_f, proc_X_val_f, proc_X_test_f = preproc(X_train_f, X_val_f, X_test_f)
-    
     #track oof prediction for cv scores
     val_preds = 0
     
