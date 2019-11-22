@@ -45,22 +45,23 @@ for i in range(0,len(columns)):
     else:
       if columns[i] not in numeric_columns:
         if columns[j] not in numeric_columns:
-          cell = cramers_v(cd[columns[i]], cd[columns[j]])
+          cell = round(cramers_v(cd[columns[i]], cd[columns[j]]), 4)
           corr[columns[i]][columns[j]] = cell
           corr[columns[j]][columns[i]] = cell
         else:
-          cell = correlation_ratio(cd[columns[i]], cd[columns[j]])
+          cell = round(correlation_ratio(cd[columns[i]], cd[columns[j]]),4)
           corr[columns[i]][columns[j]] = cell
           corr[columns[j]][columns[i]] = cell
       else:
         if columns[j] not in numeric_columns:
-          cell = correlation_ratio(cd[columns[j]], cd[columns[i]])
+          cell = round(correlation_ratio(cd[columns[j]], cd[columns[i]]),4)
           corr[columns[i]][columns[j]] = cell
           corr[columns[j]][columns[i]] = cell
         else:
-          cell, _ = ss.pearsonr(cd[columns[i]], cd[columns[j]])
+          cell = round((ss.pearsonr(cd[columns[i]], cd[columns[j]])[0]), 4)
           corr[columns[i]][columns[j]] = cell
           corr[columns[j]][columns[i]] = cell
+
 sns.heatmap(
   corr, 
   xticklabels=corr.columns.values,
