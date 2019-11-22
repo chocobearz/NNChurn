@@ -1,11 +1,12 @@
-#from keras.models import Sequential
-#from keras.layers import Dense
+from keras.models import Sequential
+from keras.layers import Dense
 import pandas as pd
 
 cd = pd.read_csv("NNdata.csv")
 
-categoricalVars = cd["internetservice", "contract", "paymentmethod"]
+categoricalVars = cd[["internetservice", "contract", "paymentmethod"]]
 
+exit(0)
 for categoical_var in categoical_vars :   
   model = Sequential()
   no_of_unique_cat  = df_train[categorical_var].nunique()
