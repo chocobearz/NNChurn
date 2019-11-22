@@ -10,4 +10,4 @@ corr = cd.corr()
 sns.heatmap(corr, 
             xticklabels=corr.columns.values,
             yticklabels=corr.columns.values)
-plt.show()
+plt.savefig('corr.png')
