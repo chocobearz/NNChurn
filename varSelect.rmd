@@ -491,12 +491,3 @@ step <- step(mfit_null, data=cd, scope=list(upper=mfit_full), direction="both")
 step
 BIC(step)
 ```
-
-Trying glmnet
-```{r}
-library(glmnet)
-
-ma1 <- model.matrix(object = churn ~ ., data = cd)
-glmnet(ma1, as.numeric(cd$churn) - 1)
-```
-
