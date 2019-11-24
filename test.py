@@ -2,12 +2,12 @@ import pandas as pd
 import numpy as np
 
 from sklearn.model_selection import train_test_split
-from keras.models import Model, Sequential
-from keras.layers import Input, Dense, Concatenate, Reshape, Dropout
-from keras.layers.embeddings import Embedding
-from sklearn.model_selection import StratifiedKFold
+#from keras.models import Model, Sequential
+#from keras.layers import Input, Dense, Concatenate, Reshape, Dropout
+#from keras.layers.embeddings import Embedding
+#from sklearn.model_selection import StratifiedKFold
 
-cd = pd.read_csv("NNdata.csv")
+cd = pd.read_csv("oneHotNNData.csv")
 
 X_train, X_test, y_train, y_test = train_test_split(
     cd.loc[:, cd.columns != 'churn'],
@@ -16,6 +16,9 @@ X_train, X_test, y_train, y_test = train_test_split(
     random_state=42
 )
 
+print(X_train)
+#If I have time will look at this
+"""
 def build_embedding_network():
   inputs = []
   embeddings = []
@@ -119,3 +122,4 @@ df_sub = pd.DataFrame({'id' : df_test.id,
 df_sub.to_csv('NN_EntityEmbed_10fold-sub.csv', index=False)
 
 pd.DataFrame(full_val_preds).to_csv('NN_EntityEmbed_10fold-val_preds.csv',index=False)
+"""
