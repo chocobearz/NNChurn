@@ -210,7 +210,7 @@ Heatmap
 ```{r}
 # Heatmap code from the link below
 # http://www.sthda.com/english/wiki/ggplot2-quick-correlation-matrix-heatmap-r-software-and-data-visualization
-ggplot(data = cd.cor, aes(x = Column_1, y = fct_rev(factor(Column_2)), 
+ggplot(data = cd.cor.long, aes(x = Column_1, y = fct_rev(factor(Column_2)), 
                           fill = Corr)) +
     geom_tile(color = "black") +
     scale_fill_gradient2(low = "#1a0033", high = "white", mid = "#d90048",
@@ -222,6 +222,14 @@ ggplot(data = cd.cor, aes(x = Column_1, y = fct_rev(factor(Column_2)),
     xlab("Variable 1") +
     ylab("Variable 2")
 ```
+
+Exact correlation values
+```{r}
+# Churn correlation values
+filter(cd.cor, Column_1 == "churn") %>% arrange(desc(Corr))
+
+```
+
 
 
 

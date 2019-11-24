@@ -51,3 +51,36 @@ full model continuous tenure and paymentmethod
 
 AIC: 5876.3
 BIC: 6040.919
+
+#####
+Correlation numbers
+#####
+
+(Not counting between similar columns such as paymentmethodAuto and paymentmethod)
+Above 0.8:
+totalcharges, tenure4: 0.81
+internetservice, monthlycharges: 0.91
+
+Above 0.6, but below 0.8:
+contract, tenure: 0.68
+monthlycharges streamingtvL 0.63
+monthlycharges streamingmovies: 0.63
+tenure, contract: 0.68
+totalcharges, monthlycharges: 0.65
+tenure3, totalcharges: 0.78
+
+Top 5 churn correlations (The full output is in the correlation_plot.rmd file
+(search '# Churn correlation values')
+contract: 0.41
+tenure4: 0.35
+tenure: 0.35
+tenure3: 0.33
+internetservice: 0.32
+
+
+
+
+
+
+
+
