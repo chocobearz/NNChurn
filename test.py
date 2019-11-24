@@ -1,13 +1,13 @@
 import pandas as pd
 import numpy as np
-
+from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score, cohen_kappa_score
 from sklearn.model_selection import train_test_split
-#from keras.models import Model, Sequential
-#from keras.layers import Input, Dense, Concatenate, Reshape, Dropout
-#from keras.layers.embeddings import Embedding
-#from sklearn.model_selection import StratifiedKFold
+from keras.models import Model, Sequential
+from keras.layers import Input, Dense, Concatenate, Reshape, Dropout
+from keras.layers.embeddings import Embedding
+from sklearn.model_selection import StratifiedKFold
 
-cd = pd.read_csv("oneHotNNData.csv")
+cd = pd.read_csv("oneHotBalance.csv")
 
 X_train, X_test, y_train, y_test = train_test_split(
     cd.loc[:, cd.columns != 'churn'],
@@ -15,7 +15,44 @@ X_train, X_test, y_train, y_test = train_test_split(
     test_size=0.33,
     random_state=42
 )
-#If I have time will look at this
+
+def build_embedding_network():
+
+
+    #initialize constructor
+    model = Sequential()
+
+    #add input layer
+    model.add(Dense(26, activation = 'relu', input_shape = (26,)))
+    
+    #add hidden layer
+    model.add(Dense(20, activation = 'relu'))
+
+    model.add(Dropout(.5))
+    """
+    #add hidden layer
+    model.add(Dense(15, activation = 'relu'))
+
+    model.add(Dropout(.3))
+    
+    #add hidden layer
+    model.add(Dense(20, activation = 'relu'))
+
+    model.add(Dropout(.4))
+
+    #add hidden layer
+    model.add(Dense(5, activation = 'relu'))
+
+    model.add(Dropout(.1))
+    """
+    #add output layer
+    model.add(Dense(1, activation = 'sigmoid'))
+
+    model.compile(loss='binary_crossentropy', optimizer='adam')
+
+    return model
+
+#If I have time will look at this lean embeddings
 """
 def build_embedding_network():
   inputs = []
@@ -58,39 +95,14 @@ def build_embedding_network():
   
   return model
 """
-#converting data to list format to match the network structure
-def preproc(X_train, X_val, X_test):
-
-    input_list_train = []
-    input_list_val = []
-    input_list_test = []
-    
-    #the cols to be embedded: rescaling to range [0, # values)
-    for c in embed_cols:
-        raw_vals = np.unique(X_train[c])
-        val_map = {}
-        for i in range(len(raw_vals)):
-            val_map[raw_vals[i]] = i       
-        input_list_train.append(X_train[c].map(val_map).values)
-        input_list_val.append(X_val[c].map(val_map).fillna(0).values)
-        input_list_test.append(X_test[c].map(val_map).fillna(0).values)
-     
-    #the rest of the columns
-    other_cols = [c for c in X_train.columns if (not c in embed_cols)]
-    input_list_train.append(X_train[other_cols].values)
-    input_list_val.append(X_val[other_cols].values)
-    input_list_test.append(X_test[other_cols].values)
-    
-    return input_list_train, input_list_val, input_list_test 
 
 #network training
-K = 8
-runs_per_fold = 3
-n_epochs = 15
+K = 2
+runs_per_fold = 15
+n_epochs = 5
 
-cv_ginis = []
-full_val_preds = np.zeros(np.shape(X_train)[0])
 y_preds = np.zeros((np.shape(X_test)[0],K))
+scores = []
 
 kfold = StratifiedKFold(n_splits = K, 
                             random_state = 231, 
@@ -98,53 +110,22 @@ kfold = StratifiedKFold(n_splits = K,
 
 for i, (f_ind, outf_ind) in enumerate(kfold.split(X_train, y_train)):
 
-    X_train_f, X_val_f = X_train.loc[f_ind].copy(), X_train.loc[outf_ind].copy()
-    y_train_f, y_val_f = y_train[f_ind], y_train[outf_ind]
-    
-    X_test_f = X_test.copy()
-    
-    #upsampling adapted from kernel: 
-    #https://www.kaggle.com/ogrellier/xgb-classifier-upsampling-lb-0-283
-    pos = (pd.Series(y_train_f == 1))
-    
-    # Add positive examples
-    X_train_f = pd.concat([X_train_f, X_train_f.loc[pos]], axis=0)
-    y_train_f = pd.concat([y_train_f, y_train_f.loc[pos]], axis=0)
-    
-    # Shuffle data
-    idx = np.arange(len(X_train_f))
-    np.random.shuffle(idx)
-    X_train_f = X_train_f.iloc[idx]
-    y_train_f = y_train_f.iloc[idx]
-
-    #preprocessing
-    proc_X_train_f, proc_X_val_f, proc_X_test_f = preproc(X_train_f, X_val_f, X_test_f)
-    
-    #track oof prediction for cv scores
-    val_preds = 0
-    
     for j in range(runs_per_fold):
     
         NN = build_embedding_network()
-        NN.fit(X_train_f, y_train_f.values, epochs=n_epochs, batch_size=4096, verbose=0)
+        NN.fit(X_train, y_train.values, epochs=n_epochs, batch_size=40, verbose=0)
    
-        val_preds += NN.predict(proc_X_val_f)[:,0] / runs_per_fold
-        y_preds[:,i] += NN.predict(proc_X_test_f)[:,0] / runs_per_fold
-        
-    full_val_preds[outf_ind] += val_preds
-        
-    cv_gini = gini_normalizedc(y_val_f.values, val_preds)
-    cv_ginis.append(cv_gini)
-    print ('\nFold %i prediction cv gini: %.5f\n' %(i,cv_gini))
-    
-print('Mean out of fold gini: %.5f' % np.mean(cv_ginis))
-print('Full validation gini: %.5f' % gini_normalizedc(y_train.values, full_val_preds))
+        y_preds[:,i] += NN.predict(X_test)[:,0] / runs_per_fold
+        score = NN.evaluate(X_test, y_test, verbose = 1)
+        scores.append(score)
 
-y_pred_final = np.mean(y_preds, axis=1)
+y_pred_final = np.round(np.mean(y_preds, axis=1))
 
-df_sub = pd.DataFrame({'id' : df_test.id, 
-                       'target' : y_pred_final},
-                       columns = ['id','target'])
-df_sub.to_csv('NN_EntityEmbed_10fold-sub.csv', index=False)
+print(y_train)
 
-pd.DataFrame(full_val_preds).to_csv('NN_EntityEmbed_10fold-val_preds.csv',index=False)
+print(y_pred_final)
+print(y_test)
+
+print(confusion_matrix(y_test, y_pred_final))
+print(cohen_kappa_score(y_test, y_pred_final))
+print(scores)
