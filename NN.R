@@ -9,28 +9,14 @@ output:
   math: katex
 ---
 
-
-knitr::opts_chunk$set(echo = TRUE)
-
-
-Info:
-
-# Link to the article that informed this code
-# https://www.datacamp.com/community/tutorials/neural-network-models-r
-
-
-#Trying neural networks with churn data**
-
+setwd("C:\\Users\\Correy\\Documents\\Stat 350\\finalProject\\NNChurn")
 
 library(dplyr)# Load the data
-cd <- read.csv(file = "oneHotBalance.csv", header = TRUE, sep = ",", 
-                stringsAsFactors = T)
+cd <- read.csv(file ="/home/ptuttosi/Stat350/NNChurn/oneHotBalance.csv", header = TRUE, sep = ",", stringsAsFactors = T)
 
 print("ORIGIN DATA")
 
 summary(cd)
-
-
 
 smpsize <- floor(0.70*nrow(cd))
 
@@ -63,9 +49,3 @@ preds[preds > 0.5] <- "Yes"
 cd1 <- data.frame(Churn = cd$churn, predicted = preds)
 
 xtabs(~ predicted + Churn, data = cd1)
-
-
-
-
-
-
