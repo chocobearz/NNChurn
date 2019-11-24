@@ -19,68 +19,53 @@ Info:
 # https://www.datacamp.com/community/tutorials/neural-network-models-r
 ```
 
-Example
-```{r, eval = F}
-#library(neuralnet)
-#library(dplyr)
-
-# creating training data set
-TKS1 = c(20, 10, 30, 20, 80, 30)
-CSS1 = c(90, 20, 40, 50, 50, 80)
-Placed1 = c(1, 0, 0, 0, 1, 1)
-
-# Here, you will combine multiple columns or features into a single set of data
-df1 = data.frame(TKS1, CSS1, Placed1)
-
-# Fitting the neural network
-nn1 <- neuralnet(Placed1 ~ TKS1 + CSS1, data = df1, hidden = 3, act.fct = "logistic", linear.output = F)
-
-# Plotting the neural network
-plot(nn1)
-
-# Creating a test set
-TKS1 = c(30, 40, 85)
-CSS1 = c(85, 50, 40)
-test1 <- data.frame(TKS1, CSS1)
-
-# Predict 'Placed1'
-Predict1 = neuralnet::compute(nn1, test1)
-Predict1$net.result
-
-# Converting probabilities into binary placed or not
-prob1 <- Predict1$net.result
-(pred1 <- ifelse(prob1 > 0.5, yes = 1, no = 0))
-```
-
 **Trying neural networks with churn data**
 
+```{r}
+library(dplyr)# Load the data
+cd <- read.csv(file = "oneHotBalance.csv", header = TRUE, sep = ",", 
+                stringsAsFactors = T)
 
+print("ORIGIN DATA")
+
+summary(cd)
+```
+
+```{r}
+smpsize <- floor(0.70*nrow(cd))
+
+set.seed(6969)
+train_index <- sample(seq_len(nrow(cd)), size = smpsize)
+
+train <- cd[train_index, ]
+test <- cd[-train_index, ]
+```
 
 ## Fitting the model
 ```{r}
-m <- model.matrix( 
-  ~ . -customerid, 
-  data = cd1
-)
-
-r <- neuralnet(churnYes ~ genderMale + seniorcitizenYes + partnerYes + dependentsYes + tenure +phoneserviceYes + multiplelinesYes + internetservicefiberOptic + internetserviceNo + onlinesecurityYes + onlinebackupYes + deviceprotectionYes + techsupportYes + streamingtvYes + streamingmoviesYes + contractoneYear + contracttwoYear + paperlessbillingYes + paymentmethodAcheck,
-  data=m, hidden=10, threshold=0.01
+library(neuralnet)
+r <- neuralnet(churn ~ gender + seniorcitizen + partner + dependents + tenure + phoneservice + multiplelines + internetservicefibreoptic + internetserviceno +internetserviceDSL + onlinesecurity + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear +contractmtm + paperlessbilling + paymentmethodcreditcard + paymentmethodbanktransfer + paymentmethodmailedcheck + paymentmethodelectroniccheck + monthlycharges + totalcharges,
+  data=cd, hidden=20, threshold=0.01, rep = 10
 )
 
 plot(r)
 ```
 
 ```{r}
+Predict <- compute(r, test)
 
-# Fitting the neural network
-full_formula <- as.formula(paste("churn ~ ", paste(colnames(cd1)[c(2:5, 7:17, 19, 22:25)], collapse = " + ")))
+preds <- Predict$net.result
 
-# Only using monthlycharges and tenure columns for now
-# Using full_formula as the formula gives an error stating that everything has
-# to be numeric/vector/something else
-nn1 <- neuralnet(churn ~ monthlycharges + tenure, data = cd1, hidden = 3, act.fct = "logistic", linear.output = F)
+preds <- rep("No", length(preds))
 
-plot(nn1)
+preds[preds > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = cd$churn, predicted = preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+
+
 ```
 
 ## Using effect plots to detemine which regressors to use for logistic reg.
