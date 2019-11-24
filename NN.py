@@ -70,4 +70,4 @@ for i in range(10):
   nn.backprop()
 
 print(nn.output)
-
+print("done")
