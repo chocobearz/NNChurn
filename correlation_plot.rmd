@@ -192,12 +192,24 @@ df2 <- data.frame(score = c(45, 70, 29, 15, 21, 40, 20, 30, 42, 65, 95, 80,
                               rep("Geometry", times = 4),
                               rep("Statistics", times = 6)))
 
+temp_df <- expand.grid( "factors" = levels(factor(df2[ , 2])), 
+                        "ss" = 0)
 for( i in c(1:length( levels(factor(df2[ , 2])) )) ){
     subset <- filter(df2, subject == levels(factor(df2[ , 2]))[i] )
-    subset_mean <- mean(current_subset[ , 1])
-    ss1 <- c(ss1, )
-    ss1 <- c(ss1, sum( (current_subset[ , 1] - mean(current_subset[ , 1]))^2 ))
+    subset_mean <- mean(subset[ , 1])
+    sum_value = sum((subset[ , 1] - subset_mean)^2)
+    temp_df$ss[i] <- sum_value
 }
+
+ss2 <- sum((df2[ , 1] - mean(df2[ , 1]))^2)
+
+ss1 <- sum(temp_df$ss)
+
+correlation_value <- sqrt( (ss2 - sum(temp_df$ss)) / ss2)
+
+correlation_value
+
+## end
 
 skrt <- expand.grid( "factors" = levels(factor(df2[ , 2])), "ss1" = 0 )
 
@@ -218,20 +230,69 @@ ss1 <- c(ss1, sum((d1$score - mean(d1$score))^2))
 
 ## Actual implementation
 
-# Get the columns
-col_1 <- cd$tenure
-col_2 <- cd$paymentmethod
+cor_ratio <- function(column1, column2){
+    # Some assumptions
+    # This function assumes no NA's, and that the rows of both columns are
+    # in correct orders
+    
+    # If the order of the column classes are factor first, then use
+    # the same function but swap the columns
+    if(class(column1) == "factor" & 
+       (class(column2) == "numeric" | class(column2) == "integer")){
+        cor_ratio(column2, column1)
+    }
+    # If the columns types are in the correct order
+    else if( (class(column1) == "numeric" | class(column1) == "integer") &
+        class(column2) == "factor"){
+            # Create a temporary dataframe to store columns for filter function
+            temp_df <- data.frame("score" = column1,
+                                  "subject" = column2)
+            
+            # Create a dataframe to store sum of squares of category
+            # observation minus the category mean
+            ss_df <- expand.grid( "factors" = levels(factor(column2)),
+                                    "ss" = 0)
+            for( i in c(1:length( levels(factor(column2)) )) ){
+                subset <- filter(temp_df, 
+                                 subject == levels(factor(column2))[i] )
+                subset_mean <- mean(subset[ , 1])
+                sum_value = sum((subset[ , 1] - subset_mean)^2)
+                ss_df$ss[i] <- sum_value
+            }
+            # Remove variables that are no longer needed
+            rm(subset, subset_mean, sum_value)
+            
+            # Assigning variables for these sums of squares for debugging
+            ss1 <- sum(ss_df$ss)
+            ss2 <- sum( (temp_df$score - mean(temp_df$score))^2 )
+            
+            correlation_value <- sqrt( (ss2 - sum(ss_df$ss)) / ss2)
+            
+            # Removing variables that are no longer needed
+            rm(temp_df, ss1, ss2)
+            
+            return(correlation_value)
+        }
+    else{ # Error message if the incorrect inputs are given
+        return("Error! This function only accepts one vector of class 'numeric'
+               and one vector of class 'factor'.")
+    }
+}
 
-# Overall mean
-om <- mean(cd$tenure)
+cor_ratio(cd$gender, cd$tenure)
 
-# Get the averages within each category
-summ_1 <- group_by(cd, paymentmethod) %>%
-summarise(avg = mean(tenure), 
-          SS1 = sum(tenure - avg)^2, SS2 = sum(tenure - om)^2)
-summ_1
-# This is the specific mean for the first category
-summ_1[1, ]
+# Wikipedia example
+df2 <- data.frame(score = c(45, 70, 29, 15, 21, 40, 20, 30, 42, 65, 95, 80, 70, 85, 73), 
+                  subject = c(rep("Algebra", times = 5),
+                              rep("Geometry", times = 4),
+                              rep("Statistics", times = 6)
+                              )
+                  )
+
+# Also testing that the ordering if/else statements are working
+cor_ratio(df2$score, df2$subject)
+cor_ratio(df2$subject, df2$score)
+
 ```
 
 
