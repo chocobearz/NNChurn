@@ -29,12 +29,18 @@ plot(r)
 
 Predict <- compute(r, test)
 
-preds <- Predict$net.result
+probs <- Predict$net.result
 
-preds <- rep("No", length(preds))
+preds <- rep("No", length(probs))
 
-preds[preds > 0.5] <- "Yes"
+preds[probs > 0.5] <- "Yes"
 
-cd1 <- data.frame(Churn = cd$churn, predicted = preds)
+tests<- test$churn
 
-xtabs(~ predicted + Churn, data = cd1)
+tests <- rep("No", length(tests))
+
+tests[test$churn == 1] <- "Yes"
+
+cd1 <- data.frame(tests = tests, predicted = preds)
+
+xtabs(~ predicted + tests, data = cd1)
