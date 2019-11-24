@@ -15,8 +15,8 @@ def sigmoid_derivative(x):
 class NeuralNetwork:
   def __init__(self, x, y):
     self.input      = x
-    self.weights1   = np.random.rand(self.input.shape[1],31) 
-    self.weights2   = np.random.rand(31,1)                  
+    self.weights1   = np.random.rand(self.input.shape[1],100) 
+    self.weights2   = np.random.rand(100,1)                  
     self.y          = y
     self.output     = np.zeros(y.shape)
 
