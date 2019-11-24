@@ -1,0 +1,111 @@
+---
+title: "Variable Selection linear model"
+author: "PaigeT"
+date: "24/11/2019"
+output: html_document
+---
+
+---
+title: "Variable Selection"
+author: "Paige, Vicky, and Jackie"
+date: '2019-11-10'
+output: 
+  prettydoc::html_pretty:
+  theme : cayman
+  highlight : github
+  math: katex
+---
+
+#selection methods to determine best regressors
+
+
+```{r}
+library(ggplot2)
+library(leaps)
+library(knitr)
+```
+
+#load data
+
+```{r}
+library(dplyr)# Load the data
+cd <- read.csv(file = "oneHotNNData.csv", header = TRUE, sep = ",", 
+                stringsAsFactors = T)
+
+print("ORIGIN DATA")
+
+summary(cd)
+```
+
+
+```{r}
+mod = regsubsets(
+  churn ~ gender + seniorcitizen + partner + dependents + tenure + phoneservice + multiplelines + internetservicefibreoptic + internetserviceno +internetserviceDSL + onlinesecurity + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear +contractmtm + paperlessbilling + paymentmethodcreditcard + paymentmethodbanktransfer + paymentmethodmailedcheck + paymentmethodelectroniccheck + monthlycharges + totalcharges, data = cd,nbest = 10)
+
+mod.summary = summary(mod)
+
+which.max(mod.summary$adjr2)
+which.min(mod.summary$cp)
+which.min(mod.summary$bic)
+
+coef(mod, id = 81)
+
+print(mod.summary$adjr2[81])
+print(mod.summary$cp[81])
+print(mod.summary$bic[81])
+```
+
+```{r}
+fir  = lm(
+    churn ~ 
+    phoneservice +
+    onlinebackup +
+    deviceprotection +
+    streamingtv +
+    paymentmethodcreditcard +
+    paymentmethodbanktranser +
+    paymentmethodelectroniccheck
+    contractmtm +
+    internetserviceDSL,
+  data = cd
+)
+```
+
+
+
+
+# try selection
+
+```{r}
+library(MASS)
+library(stats4)
+
+mfit_null  = glm(churn~1, data=cd, family = "binomial")
+mfit_full  = glm(
+    churn ~ 
+    gender  +
+    seniorcitizen +
+    dependents +
+    partner +
+    phoneservice +
+    multiplelines +
+    internetservice +
+    onlinebackup +
+    onlinesecurity +
+    deviceprotection +
+    techsupport +
+    streamingtv +
+    streamingmovies +
+    contract +
+    paperlessbilling +
+    monthlycharges +
+    totalcharges +
+    paymentmethodAuto +
+    tenure4, 
+  data = cd,
+  family = "binomial"
+)
+step <- step(mfit_null, data=cd, scope=list(upper=mfit_full), direction="both")
+step
+BIC(step)
+```
