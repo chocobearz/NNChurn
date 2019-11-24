@@ -19,7 +19,7 @@ Info:
 # https://www.datacamp.com/community/tutorials/neural-network-models-r
 
 
-**Trying neural networks with churn data**
+#Trying neural networks with churn data**
 
 
 library(dplyr)# Load the data
