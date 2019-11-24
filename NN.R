@@ -17,9 +17,11 @@ test <- cd[-train_index, ]
 ## Fitting the model
 
 library(neuralnet)
+print("Running")
 r <- neuralnet(churn ~ gender + seniorcitizen + partner + dependents + tenure + phoneservice + multiplelines + internetservicefibreoptic + internetserviceno +internetserviceDSL + onlinesecurity + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear +contractmtm + paperlessbilling + paymentmethodcreditcard + paymentmethodbanktransfer + paymentmethodmailedcheck + paymentmethodelectroniccheck + monthlycharges + totalcharges,
-  data=cd, hidden=20, threshold=0.01, rep = 10
+  data=cd, hidden=20, threshold=0.01, rep = 1
 )
+print("Done")
 
 plot(r)
 
