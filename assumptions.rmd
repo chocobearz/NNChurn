@@ -23,8 +23,27 @@ summary(cd)
 
 ```{r}
 fit <- lm(churn ~ ., data = cd)
+fitAllReg <- lm(
+    churn ~ 
+    phoneservice +
+    onlinebackup +
+    deviceprotection +
+    streamingtv +
+    paymentmethodcreditcard +
+    paymentmethodbanktransfer +
+    paymentmethodelectroniccheck +
+    contractmtm +
+    internetserviceDSL,
+  data = cd
+)
+fitStep <- fit <- lm(formula = churn ~ contractmtm + internetservicefibreoptic + 
+    tenure + paymentmethodelectroniccheck + paperlessbilling + 
+    internetserviceno + totalcharges + streamingmovies + multiplelines + 
+    onlinesecurity + streamingtv + techsupport + seniorcitizen + 
+    contracttwoyear + dependents + monthlycharges, data = cd)
 summary(fit)
-
+summary(fitAllReg)
+summary(fitStep)
 ```
 
 ```{r}
@@ -48,6 +67,39 @@ rStu_Res = rstudent(fit)
 
 
 ```{r}
+OLS_ResidualsAR = fitAllReg$residuals
+
+# Standardized Resiudals
+summary_tableAR <- summary(fitAllReg)
+MSE_hatAR <- get_mse(fitAllReg)
+Standardized_ResidualsAR = OLS_ResidualsAR/sqrt(MSE_hat)
+
+# Studentized Residuals
+# Studentized_Residuals = MASS::studres(DT_model) # this is not Studentized Residuals!!!
+Studentized_ResidualsAR = rstandard(fitAllReg)
+
+# R-Student Residuals
+rStu_ResAR = rstudent(fitAllReg)
+```
+
+```{r}
+OLS_ResidualsS = fitStep$residuals
+
+# Standardized Resiudals
+summary_tableS <- summary(fitStep)
+MSE_hatS <- get_mse(fitStep)
+Standardized_ResidualsS = OLS_ResidualsS/sqrt(MSE_hat)
+
+# Studentized Residuals
+# Studentized_Residuals = MASS::studres(DT_model) # this is not Studentized Residuals!!!
+Studentized_ResidualsS = rstandard(fitStep)
+
+# R-Student Residuals
+rStu_ResS = rstudent(fitStep)
+```
+
+
+```{r}
 par(mfrow=c(2,2))
 hist(OLS_Residuals, xlab='OLS Residuals', col='blue', main='OLS Residuals', cex.main = 2)
 hist(Standardized_Residuals, xlab='OLS Residuals', col='blue', main='OLS Residuals', cex.main = 2)
@@ -55,6 +107,21 @@ hist(Studentized_Residuals, xlab='Studentized Residuals', col='blue', main='Stud
 hist(rStu_Res, xlab='R-Student Residuals', col='blue', main='R-Student Residuals', cex.main = 2)
 ```
 
+```{r}
+par(mfrow=c(2,2))
+hist(OLS_ResidualsAR, xlab='OLS Residuals', col='blue', main='OLS Residuals', cex.main = 2)
+hist(Standardized_ResidualsAR, xlab='OLS Residuals', col='blue', main='OLS Residuals', cex.main = 2)
+hist(Studentized_ResidualsAR, xlab='Studentized Residuals', col='blue', main='Studentized Residuals', cex.main = 2)
+hist(rStu_ResAR, xlab='R-Student Residuals', col='blue', main='R-Student Residuals', cex.main = 2)
+```
+
+```{r}
+par(mfrow=c(2,2))
+hist(OLS_ResidualsS, xlab='OLS Residuals', col='blue', main='OLS Residuals', cex.main = 2)
+hist(Standardized_ResidualsS, xlab='OLS Residuals', col='blue', main='OLS Residuals', cex.main = 2)
+hist(Studentized_ResidualsS, xlab='Studentized Residuals', col='blue', main='Studentized Residuals', cex.main = 2)
+hist(rStu_ResS, xlab='R-Student Residuals', col='blue', main='R-Student Residuals', cex.main = 2)
+```
 
 ```{r}
 # Check for normality with Normal Probability plot (Q-Q plot)
@@ -65,6 +132,25 @@ e1071::probplot(Standardized_Residuals, qnorm, xlab='Standardized Residuals', yl
 e1071::probplot(Studentized_Residuals, qnorm, xlab='Studentized Residuals', ylab='Percent')
 e1071::probplot(rStu_Res, qnorm, xlab='R-Student Residuals', ylab='Percent')
 ```
+
+```{r}
+# Check for normality with Normal Probability plot (Q-Q plot)
+par(mfrow=c(2,2))
+e1071::probplot(OLS_ResidualsAR, qnorm, xlab='OLS Residuals', ylab='Percent')
+e1071::probplot(Standardized_ResidualsAR, qnorm, xlab='Standardized Residuals', ylab='Percent')
+e1071::probplot(Studentized_ResidualsAR, qnorm, xlab='Studentized Residuals', ylab='Percent')
+e1071::probplot(rStu_ResAR, qnorm, xlab='R-Student Residuals', ylab='Percent')
+```
+
+```{r}
+# Check for normality with Normal Probability plot (Q-Q plot)
+par(mfrow=c(2,2))
+e1071::probplot(OLS_ResidualsS, qnorm, xlab='OLS Residuals', ylab='Percent')
+e1071::probplot(Standardized_ResidualsS, qnorm, xlab='Standardized Residuals', ylab='Percent')
+e1071::probplot(Studentized_ResidualsS, qnorm, xlab='Studentized Residuals', ylab='Percent')
+e1071::probplot(rStu_ResS, qnorm, xlab='R-Student Residuals', ylab='Percent')
+```
+
 
 ```{r}
 yhat = fit$fitted.values
@@ -89,9 +175,66 @@ par(mfrow=c(2,2))
 plot(fit)
 ```
 
+
+```{r}
+yhat = fitAllReg$fitted.values
+
+par(mfrow=c(2,2))
+plot(yhat, OLS_ResidualsAR, ylab='OLS Residuals', xlab='Fitted Values', main='OLS Residuals', pch=16)
+abline(h=0)
+
+plot(yhat, Standardized_ResidualsAR, ylab='Standardized Residuals', xlab='Fitted Values', main='Standardized Residuals', pch=16)
+abline(h=0)
+
+plot(yhat, Studentized_ResidualsAR, ylab='Studentized Residuals', xlab='Fitted Values', main='Studentized Residuals', pch=16)
+abline(h=0)
+
+plot(yhat, rStu_ResAR, ylab='R-Student Residuals', xlab='Fitted Values', main='R-Studentized Residuals', pch=16)
+abline(h=0)
+
+par(mfrow=c(1,1))
+plot(fitAllReg)
+
+par(mfrow=c(2,2))
+plot(fitAllReg)
+```
+
+```{r}
+yhat = fitStep$fitted.values
+
+par(mfrow=c(2,2))
+plot(yhat, OLS_ResidualsS, ylab='OLS Residuals', xlab='Fitted Values', main='OLS Residuals', pch=16)
+abline(h=0)
+
+plot(yhat, Standardized_ResidualsS, ylab='Standardized Residuals', xlab='Fitted Values', main='Standardized Residuals', pch=16)
+abline(h=0)
+
+plot(yhat, Studentized_ResidualsS, ylab='Studentized Residuals', xlab='Fitted Values', main='Studentized Residuals', pch=16)
+abline(h=0)
+
+plot(yhat, rStu_ResS, ylab='R-Student Residuals', xlab='Fitted Values', main='R-Studentized Residuals', pch=16)
+abline(h=0)
+
+par(mfrow=c(1,1))
+plot(fitStep)
+
+par(mfrow=c(2,2))
+plot(fitStep)
+```
+
 ```{r}
 # PRESS Residuals
 (prs_res1 = PRESS(fit))
+```
+
+```{r}
+# PRESS Residuals
+(prs_res1 = PRESS(fitAllReg))
+```
+
+```{r}
+# PRESS Residuals
+(prs_res1 = PRESS(fitStep))
 ```
 
 ```{r}
@@ -101,3 +244,16 @@ alr3::pureErrorAnova(fit)
 
 ```
 
+```{r}
+# install.packages("alr3")
+library(alr3)
+alr3::pureErrorAnova(fitAllReg) 
+
+```
+
+```{r}
+# install.packages("alr3")
+library(alr3)
+alr3::pureErrorAnova(fitStep) 
+
+```
