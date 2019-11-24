@@ -64,7 +64,7 @@ churn = churn.reshape(7043, 1)
 
 nn = NeuralNetwork(regressors, churn)
 
-for i in range(10):
+for i in range(1000):
   nn.feedforward()
   nn.backprop()
 
