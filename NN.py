@@ -43,7 +43,6 @@ class NeuralNetwork:
         np.dot(
           2*(
             self.y - self.output
-            exit(0)
           ) * sigmoid_derivative(
             self.output
           ), self.weights2.T
