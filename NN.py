@@ -51,7 +51,6 @@ class NeuralNetwork:
         )
       )
     )
-    exit(0)
     # update the weights with the derivative (slope) of the loss function
     self.weights1 += d_weights1
     self.weights2 += d_weights2
