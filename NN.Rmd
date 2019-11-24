@@ -46,7 +46,7 @@ test <- cd[-train_index, ]
 library(neuralnet)
 print("Running")
 r <- neuralnet(churn ~ gender + seniorcitizen + partner + dependents + tenure + phoneservice + multiplelines + internetservicefibreoptic + internetserviceno +internetserviceDSL + onlinesecurity + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear +contractmtm + paperlessbilling + paymentmethodcreditcard + paymentmethodbanktransfer + paymentmethodmailedcheck + paymentmethodelectroniccheck + monthlycharges + totalcharges,
-  data=cd, hidden=20, threshold=0.01, stepmax = 1e+10
+  data=cd, hidden=c(26,20,1), threshold=0.01, stepmax = 1e+10
 )
 print("done")
 
