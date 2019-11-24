@@ -94,6 +94,7 @@ write.table(cleanData, file = "cleanData.csv",row.names=FALSE, na="",col.names=T
 #create balancec churn
 
 ```{r}
+library(caret)
 set.seed(6969)
 cleanDataBalance <-upSample(x = cleanData, y = cleanData$churn)
 cleanDataBalance <- cleanDataBalance[,1:23]
@@ -114,13 +115,11 @@ summary(oneHot)
 ```
 
 ```{r}
-library(imbalance)
-library(caret)
 oneHot$churn <- as.factor(oneHot$churn)
 summary(oneHot)
 set.seed(6969)
 oneHotBalance <-upSample(x = oneHot, y = oneHot$churn)
-oneHotBalance <- oneHot[,1:27]
+oneHotBalance <-oneHotBalance[1:27]
 summary(oneHotBalance)
 ```
 

@@ -11,7 +11,8 @@ output:
 
 ```{r}
 library(dplyr)# Load the data
-cd <- read.csv(file = "cleanData.csv", header = TRUE, sep = ",", 
+library(broom)
+cd <- read.csv(file = "oneHotNNData.csv", header = TRUE, sep = ",", 
                 stringsAsFactors = T)
 
 print("ORIGIN DATA")
@@ -21,7 +22,8 @@ summary(cd)
 
 
 ```{r}
-fit <- glm(churn ~ . -tenure4 -tenure3 -paymentmethodAuto, data = cd, family = "binomial")
+fit <- lm(churn ~ ., data = cd)
+summary(fit)
 
 ```
 
@@ -47,13 +49,8 @@ rStu_Res = rstudent(fit)
 
 ```{r}
 par(mfrow=c(2,2))
-hist(OLS_Residuals, xlab='OLS Residuals', col='blue', xlim=c(-22,-0), ylim=c(0,6000), main='OLS Residuals', cex.main = 2)
-hist(OLS_Residuals, xlab='OLS Residuals', col='blue', xlim=c(0,20),   ylim=c(0,2000), main='OLS Residuals', cex.main = 2)
-hist(OLS_Residuals, xlab='OLS Residuals', col='blue', xlim=c(20,45),   ylim=c(0,25), main='OLS Residuals', cex.main = 2)
-hist(OLS_Residuals, xlab='OLS Residuals', col='blue', xlim=c(40,400),   ylim=c(0,9), main='OLS Residuals', cex.main = 2)
-hist(Standardized_Residuals, xlab='OLS Residuals', col='blue', xlim=c(-6,-0), ylim=c(0,5000), main='OLS Residuals', cex.main = 2)
-hist(Standardized_Residuals, xlab='OLS Residuals', col='blue', xlim=c(0,6),   ylim=c(0,2000), main='OLS Residuals', cex.main = 2)
-hist(Standardized_Residuals, xlab='OLS Residuals', col='blue', xlim=c(5,50),   ylim=c(0,13), main='OLS Residuals', cex.main = 2)
+hist(OLS_Residuals, xlab='OLS Residuals', col='blue', main='OLS Residuals', cex.main = 2)
+hist(Standardized_Residuals, xlab='OLS Residuals', col='blue', main='OLS Residuals', cex.main = 2)
 hist(Studentized_Residuals, xlab='Studentized Residuals', col='blue', main='Studentized Residuals', cex.main = 2)
 hist(rStu_Res, xlab='R-Student Residuals', col='blue', main='R-Student Residuals', cex.main = 2)
 ```
