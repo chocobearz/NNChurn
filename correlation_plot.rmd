@@ -13,18 +13,98 @@ output:
 ```{r}
 library(ggplot2)
 library(reshape2) # Used for the melt function
+library(dplyr)
+library(forcats) # Used in the correlation plot for fct_rev
 ```
 
 #load data
 
 ```{r}
-library(dplyr)# Load the data
 cd <- read.csv(file = "cleanData.csv", header = TRUE, sep = ",", 
                 stringsAsFactors = T)
 
 print("ORIGIN DATA")
 
 summary(cd)
+```
+
+# Correlation ratio function
+```{r}
+cor_ratio <- function(column1, column2){
+    # Some assumptions
+    # This function assumes no NA's, and that the rows of both columns are
+    # in correct orders
+    
+    # If the order of the column classes are factor first, then use
+    # the same function but swap the columns
+    if(class(column1) == "factor" & 
+       (class(column2) == "numeric" | class(column2) == "integer")){
+        cor_ratio(column2, column1)
+    }
+    # If the columns types are in the correct order
+    else if( (class(column1) == "numeric" | class(column1) == "integer") &
+        class(column2) == "factor"){
+            # Create a temporary dataframe to store columns for filter function
+            temp_df <- data.frame("score" = column1,
+                                  "subject" = column2)
+            
+            # Create a dataframe to store sum of squares of category
+            # observation minus the category mean
+            ss_df <- expand.grid( "factors" = levels(factor(column2)),
+                                    "ss" = 0)
+            for( i in c(1:length( levels(factor(column2)) )) ){
+                subset <- filter(temp_df, 
+                                 subject == levels(factor(column2))[i] )
+                subset_mean <- mean(subset[ , 1])
+                sum_value = sum((subset[ , 1] - subset_mean)^2)
+                ss_df$ss[i] <- sum_value
+            }
+            # Remove variables that are no longer needed
+            rm(subset, subset_mean, sum_value)
+            
+            # Assigning variables for these sums of squares for debugging
+            ss1 <- sum(ss_df$ss)
+            ss2 <- sum( (temp_df$score - mean(temp_df$score))^2 )
+            
+            correlation_value <- sqrt( (ss2 - sum(ss_df$ss)) / ss2)
+            
+            # Removing variables that are no longer needed
+            rm(temp_df, ss1, ss2)
+            
+            return(correlation_value)
+        }
+    else{ # Error message if the incorrect inputs are given
+        return("Error! This function only accepts one vector of class 'numeric'
+               and one vector of class 'factor'.")
+    }
+}
+
+# Wikipedia example
+# https://en.wikipedia.org/wiki/Correlation_ratio
+
+# SS1 values
+# 1952 for algebra
+# 308 for geometry
+# 600 for statistics
+# adds up to 2860
+
+# SS2 should be 9640
+
+# Correlation should be 0.8386
+
+df2 <- data.frame(score = c(45, 70, 29, 15, 21, 40, 20, 30, 42, 65, 95, 80, 70, 85, 73), 
+                  subject = c(rep("Algebra", times = 5),
+                              rep("Geometry", times = 4),
+                              rep("Statistics", times = 6)
+                              )
+                  )
+
+# Also testing that the ordering if/else statements are working
+cor_ratio(df2$score, df2$subject)
+cor_ratio(df2$subject, df2$score)
+
+# Removing example variable
+rm(df2)
 ```
 
 # Getting correlations
@@ -81,8 +161,8 @@ categorical_cor <- function(column1, column2){
             (class(column1) == "numeric" || class(column1) == "integer") &&
             class(column2) == "factor"
         ){
-            summary_table <- summary(aov(column1 ~ column2))
-            return(summary_table[[1]][[5]][1]) # This should return the p-value
+            # Get a correlation ratio for mixed columns
+            return(cor_ratio(column1, column2))
         }
         else{ # Return this message if at least one of the columns
             # is a different class than factor, numerical or integer
@@ -103,12 +183,6 @@ cd.cor <- cbind(expand.grid("Column_1" = colnames(cd),
 # Create correlation plot matrix
 ```{r}
 head(cd.cor$Column_1)
-
-# Example of using the map function
-df1 <- data.frame("Col_1" = c(1, 1, 2, 2, 3, 3), 
-                  "Col_2" = c("r", "r", "b", "b", "y", "y"))
-
-categorical_cor(df1$Col_1, df1$Col_2)
 
 # For each row of cd.cor
 
@@ -131,183 +205,22 @@ for(i in c(1:529)){
 # difference between the sets arose by chance
 ```
 
-Testing a correlation ratio algorithm
-```{r}
-# Creating a test to try the algorithm
-df2 <- data.frame(score = c(45, 70, 29, 15, 21, 40, 20, 30, 42, 65, 95, 80, 70, 85, 73), 
-                  subject = c(rep("Algebra", times = 5),
-                              rep("Geometry", times = 4),
-                              rep("Statistics", times = 6)
-                              )
-                  )
-
-# Using str, we can see that the subject category has factors just like
-# the original data frame
-str(df2$subject)
-# This should be numeric or integer
-class(df2$score)
-om <- mean(df2$score)
-
-
-
-summ_2 <- group_by(df2, subject) %>%
-    summarise(avg = mean(score),
-              ss1 = sum(score - avg)^2, ss2 = sum(score - om)^2)
-
-## Creating a function that will handle this
-# Function takes two columns, one categorical, one numerical,
-# and computes the correlation
-mixed_cor <- function(column1, column2){
-    # Checking that the dplyr library is loaded
-    library(dplyr)
-    
-    # This function accepts two columns, one has to be numerical/integer, the
-    # other must be categorical (factor type)
-    
-    # This function assumes no NAs
-    
-    # Check that column1 is numerical, and column2 is factor in that order
-    # if not, use this same function with the arguments swapped
-    if(class(column1) == "factor"){
-        mixed_cor(column2, column1)
-    }
-    else{ # For each factor in the categorical column
-        for(i in c(1:length( levels(factor(column2)) )) ){
-            categorical_means = c(categorical_means, 
-                mean(filter(df2, subject == levels(factor(column2))[i])$score))
-        }
-        for( i in c(1:length( levels(factor(column2)) )) ){
-            # Get the ss1 portion
-            ss1_vect <- c(ss1_vect, )
-        }
-        ss1 = sum(ss1_vect^2)
-    }
-}
-
-## Hard coding
-
-df2 <- data.frame(score = c(45, 70, 29, 15, 21, 40, 20, 30, 42, 65, 95, 80, 
-                            70, 85, 73), 
-                  subject = c(rep("Algebra", times = 5),
-                              rep("Geometry", times = 4),
-                              rep("Statistics", times = 6)))
-
-temp_df <- expand.grid( "factors" = levels(factor(df2[ , 2])), 
-                        "ss" = 0)
-for( i in c(1:length( levels(factor(df2[ , 2])) )) ){
-    subset <- filter(df2, subject == levels(factor(df2[ , 2]))[i] )
-    subset_mean <- mean(subset[ , 1])
-    sum_value = sum((subset[ , 1] - subset_mean)^2)
-    temp_df$ss[i] <- sum_value
-}
-
-ss2 <- sum((df2[ , 1] - mean(df2[ , 1]))^2)
-
-ss1 <- sum(temp_df$ss)
-
-correlation_value <- sqrt( (ss2 - sum(temp_df$ss)) / ss2)
-
-correlation_value
-
-## end
-
-skrt <- expand.grid( "factors" = levels(factor(df2[ , 2])), "ss1" = 0 )
-
-sum(ss1)
-
-d1 <- filter(df2, subject == "Algebra")
-ss1 <- c(ss1, sum((d1$score - mean(d1$score))^2))
-
-## End hard coding
-
-# SS1 values
-# 1952 for algebra
-# 308 for geometry
-# 600 for statistics
-# adds up to 2860
-
-# SS2 should be 9640
-
-## Actual implementation
-
-cor_ratio <- function(column1, column2){
-    # Some assumptions
-    # This function assumes no NA's, and that the rows of both columns are
-    # in correct orders
-    
-    # If the order of the column classes are factor first, then use
-    # the same function but swap the columns
-    if(class(column1) == "factor" & 
-       (class(column2) == "numeric" | class(column2) == "integer")){
-        cor_ratio(column2, column1)
-    }
-    # If the columns types are in the correct order
-    else if( (class(column1) == "numeric" | class(column1) == "integer") &
-        class(column2) == "factor"){
-            # Create a temporary dataframe to store columns for filter function
-            temp_df <- data.frame("score" = column1,
-                                  "subject" = column2)
-            
-            # Create a dataframe to store sum of squares of category
-            # observation minus the category mean
-            ss_df <- expand.grid( "factors" = levels(factor(column2)),
-                                    "ss" = 0)
-            for( i in c(1:length( levels(factor(column2)) )) ){
-                subset <- filter(temp_df, 
-                                 subject == levels(factor(column2))[i] )
-                subset_mean <- mean(subset[ , 1])
-                sum_value = sum((subset[ , 1] - subset_mean)^2)
-                ss_df$ss[i] <- sum_value
-            }
-            # Remove variables that are no longer needed
-            rm(subset, subset_mean, sum_value)
-            
-            # Assigning variables for these sums of squares for debugging
-            ss1 <- sum(ss_df$ss)
-            ss2 <- sum( (temp_df$score - mean(temp_df$score))^2 )
-            
-            correlation_value <- sqrt( (ss2 - sum(ss_df$ss)) / ss2)
-            
-            # Removing variables that are no longer needed
-            rm(temp_df, ss1, ss2)
-            
-            return(correlation_value)
-        }
-    else{ # Error message if the incorrect inputs are given
-        return("Error! This function only accepts one vector of class 'numeric'
-               and one vector of class 'factor'.")
-    }
-}
-
-cor_ratio(cd$gender, cd$tenure)
-
-# Wikipedia example
-df2 <- data.frame(score = c(45, 70, 29, 15, 21, 40, 20, 30, 42, 65, 95, 80, 70, 85, 73), 
-                  subject = c(rep("Algebra", times = 5),
-                              rep("Geometry", times = 4),
-                              rep("Statistics", times = 6)
-                              )
-                  )
-
-# Also testing that the ordering if/else statements are working
-cor_ratio(df2$score, df2$subject)
-cor_ratio(df2$subject, df2$score)
-
-```
-
 
 Heatmap
 ```{r}
 # Heatmap code from the link below
 # http://www.sthda.com/english/wiki/ggplot2-quick-correlation-matrix-heatmap-r-software-and-data-visualization
-ggplot(data = cd.cor, aes(x = Column_1, y = Column_2, fill = Corr)) +
+ggplot(data = cd.cor, aes(x = Column_1, y = fct_rev(factor(Column_2)), 
+                          fill = Corr)) +
     geom_tile(color = "black") +
-    scale_fill_gradient2(low = "black", high = "white", mid = "red",
+    scale_fill_gradient2(low = "#1a0033", high = "white", mid = "#d90048",
                          midpoint = 0.5, limit = c(0, 1), space = "Lab",
                          name = "Correlation") +
     theme_minimal() + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-        coord_fixed()
+    coord_fixed() +
+    xlab("Variable 1") +
+    ylab("Variable 2")
 ```
 
 
