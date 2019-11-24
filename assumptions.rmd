@@ -92,3 +92,15 @@ par(mfrow=c(2,2))
 plot(fit)
 ```
 
+```{r}
+# PRESS Residuals
+(prs_res1 = PRESS(fit))
+```
+
+```{r}
+# install.packages("alr3")
+library(alr3)
+alr3::pureErrorAnova(fit) 
+
+```
+

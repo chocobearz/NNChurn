@@ -91,3 +91,41 @@ summary(cleanData)
 write.table(cleanData, file = "cleanData.csv",row.names=FALSE, na="",col.names=TRUE, sep=",")
 ```
 
+#create balancec churn
+
+```{r}
+set.seed(6969)
+cleanDataBalance <-upSample(x = cleanData, y = cleanData$churn)
+cleanDataBalance <- cleanDataBalance[,1:23]
+summary(cleanDataBalance)
+```
+
+```{r}
+write.table(cleanDataBalance, file = "cleanDataBalance.csv",row.names=FALSE, na="",col.names=TRUE, sep=",")
+```
+
+#oversample to help with imbalce in Churn for one hot data
+```{r}
+oneHot <- as.data.frame(read.csv(file = "oneHotNNData.csv", header = TRUE, sep = ",", 
+                stringsAsFactors = T))
+
+print("ORIGIN DATA")
+summary(oneHot)
+```
+
+```{r}
+library(imbalance)
+library(caret)
+oneHot$churn <- as.factor(oneHot$churn)
+summary(oneHot)
+set.seed(6969)
+oneHotBalance <-upSample(x = oneHot, y = oneHot$churn)
+oneHotBalance <- oneHot[,1:27]
+summary(oneHotBalance)
+```
+
+Save data to csv for use in different methodologies
+
+```{r}
+write.table(oneHotBalance, file = "oneHotBalance.csv",row.names=FALSE, na="",col.names=TRUE, sep=",")
+```

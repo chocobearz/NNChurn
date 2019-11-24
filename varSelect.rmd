@@ -140,6 +140,8 @@ which.max(mod.summary$adjr2)
 which.min(mod.summary$cp)
 which.min(mod.summary$bic)
 
+print(mod.summary$bic)
+
 coef(mod, id = 71)
 print(mod.summary$adjr2[71])
 print(mod.summary$cp[71])
