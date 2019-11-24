@@ -15,8 +15,6 @@ X_train, X_test, y_train, y_test = train_test_split(
     test_size=0.33,
     random_state=42
 )
-
-print(X_train)
 #If I have time will look at this
 """
 def build_embedding_network():
@@ -59,6 +57,31 @@ def build_embedding_network():
   model.compile(loss='binary_crossentropy', optimizer='adam')
   
   return model
+"""
+#converting data to list format to match the network structure
+def preproc(X_train, X_val, X_test):
+
+    input_list_train = []
+    input_list_val = []
+    input_list_test = []
+    
+    #the cols to be embedded: rescaling to range [0, # values)
+    for c in embed_cols:
+        raw_vals = np.unique(X_train[c])
+        val_map = {}
+        for i in range(len(raw_vals)):
+            val_map[raw_vals[i]] = i       
+        input_list_train.append(X_train[c].map(val_map).values)
+        input_list_val.append(X_val[c].map(val_map).fillna(0).values)
+        input_list_test.append(X_test[c].map(val_map).fillna(0).values)
+     
+    #the rest of the columns
+    other_cols = [c for c in X_train.columns if (not c in embed_cols)]
+    input_list_train.append(X_train[other_cols].values)
+    input_list_val.append(X_val[other_cols].values)
+    input_list_test.append(X_test[other_cols].values)
+    
+    return input_list_train, input_list_val, input_list_test 
 
 #network training
 K = 8
@@ -93,6 +116,9 @@ for i, (f_ind, outf_ind) in enumerate(kfold.split(X_train, y_train)):
     np.random.shuffle(idx)
     X_train_f = X_train_f.iloc[idx]
     y_train_f = y_train_f.iloc[idx]
+
+    #preprocessing
+    proc_X_train_f, proc_X_val_f, proc_X_test_f = preproc(X_train_f, X_val_f, X_test_f)
     
     #track oof prediction for cv scores
     val_preds = 0
@@ -122,4 +148,3 @@ df_sub = pd.DataFrame({'id' : df_test.id,
 df_sub.to_csv('NN_EntityEmbed_10fold-sub.csv', index=False)
 
 pd.DataFrame(full_val_preds).to_csv('NN_EntityEmbed_10fold-val_preds.csv',index=False)
-"""
