@@ -64,12 +64,10 @@ cd = cd.to_numpy()
 churn = churn.reshape(7043, 1)
 
 nn = NeuralNetwork(regressors, churn)
-nn.feedforward()
-nn.backprop()
 
-#for i in range(10):
-    #nn.feedforward()
-    #nn.backprop()
+for i in range(10):
+  nn.feedforward()
+  nn.backprop()
 
-#print(nn.output)
+print(nn.output)
 
