@@ -1,16 +1,3 @@
----
-title: "Churn analysis with neuralnet"
-author: "Paige, Vicky, and Jackie"
-date: '2019-11-10'
-output: 
-  prettydoc::html_pretty:
-  theme : cayman
-  highlight : github
-  math: katex
----
-
-setwd("C:\\Users\\Correy\\Documents\\Stat 350\\finalProject\\NNChurn")
-
 library(dplyr)# Load the data
 cd <- read.csv(file ="/home/ptuttosi/Stat350/NNChurn/oneHotBalance.csv", header = TRUE, sep = ",", stringsAsFactors = T)
 
