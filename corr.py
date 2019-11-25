@@ -7,6 +7,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 
+plt.tight_layout()
 #cramersV to find association between categorical variables
 def cramers_v(x, y):
   confusion_matrix = pd.crosstab(x,y)
