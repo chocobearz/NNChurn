@@ -1,10 +1,31 @@
 TO DO:
-1.Check why we get negative BIC for regsubsets (approx -2000), but then when we run the model and do BIC we get a positive(approx 6000), is it because only some categories of each variable are used?
-2.see if we can make plots to show correlation between individual variables and CHURN
+1. Check why we get negative BIC for regsubsets (approx -2000), but then when we run the model and do BIC we get a positive(approx 6000), is it because only some categories of each variable are used?
+2. See if we can make plots to show correlation between individual variables and CHURN
 4. From lowest classification error we will test model assumptions
 5. LDA
 6. NN
 
+More to do:
+1. Figure out the residuals
+2. All regression? with logistic
+3. LDA (I think Vicky is working on this)
+4. VIF
+
+#####
+Assumptions about binary log regression
+#####
+• log regression does not require a linear relationship
+• residuals do not have to be normally distributed
+• homoskedasticity (variance is rather uniform) is not required
+• response variable must be binary
+• observations must be independent (no matched data or repeated measurements)
+• no multicollinearity
+• assumes linearity of regressors and log odds (log of the odds ratio)
+• requires a large sample size such that a minimum of 10 cases with the least frequent outcomes occurs for each regressor in the model
+
+#####
+Variable selection
+#####
 
 Model selected by stepwise (stepwise uses AIC, and this model has lowest AIC of all choosen models)
 contract + internetservice + tenure + paymentmethod + paperlessbilling + onlinesecurity + totalcharges + phoneservice + techsupport + monthlycharges + onlinebackup + seniorcitizen + multiplelines + dependents + deviceprotection

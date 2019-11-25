@@ -62,5 +62,70 @@ BIC(fit)
 ```
 
 
+<<<<<<< HEAD
+# We need something better for this
+```{r}
+library(ggplot2)
 
+selected_columns <- colnames(cd)[-20]
+
+for( i in c(1:length(selected_columns)) ){
+    print(
+        ggplot(cd, aes_string(x = selected_columns[i], 
+                              y = "churn")) + 
+        geom_point() +
+        xlab("regressor")
+    )
+}
+
+# 
+# 
+# ggplot(cd, aes(x = seniorcitizen, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = partner, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = dependents, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = tenure, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = phoneservice, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = multiplelines, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = internetservice, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = onlinesecurity, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = onlinebackup, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = deviceprotection, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = techsupport, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = streamingtv, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = streamingmovies, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = contract, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = paperlessbilling, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = paymentmethod, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = monthlycharges, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = totalcharges, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = tenure3, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = tenure4, y = churn)) + geom_point()
+
+# I don't think cd has paymentmethodA and paymentmethodB here
+# ggplot(cd, aes(x = paymentmethodA, y = churn)) + geom_point()
+# 
+# ggplot(cd, aes(x = paymentmethodB, y = churn)) + geom_point()
+```
+=======
+
+>>>>>>> b5ea8be0e31cceece529fc989274e270c5f7a6f4
 
