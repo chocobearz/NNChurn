@@ -80,7 +80,7 @@ sns.heatmap(
 
 plt.savefig('corr.png')
 
-corr2 = corr(oneHot).astyoe(float)
+corr2 = oneHot.corr()
 
 sns.heatmap(
   corr2, 
