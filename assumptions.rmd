@@ -20,9 +20,9 @@ print("ORIGIN DATA")
 summary(cd)
 ```
 
-
 ```{r}
 fit <- lm(churn ~ ., data = cd)
+
 fitAllReg <- lm(
     churn ~ 
     phoneservice +
@@ -36,15 +36,44 @@ fitAllReg <- lm(
     internetserviceDSL,
   data = cd
 )
+
 fitStep <- fit <- lm(formula = churn ~ contractmtm + internetservicefibreoptic + 
     tenure + paymentmethodelectroniccheck + paperlessbilling + 
     internetserviceno + totalcharges + streamingmovies + multiplelines + 
     onlinesecurity + streamingtv + techsupport + seniorcitizen + 
     contracttwoyear + dependents + monthlycharges, data = cd)
+
 summary(fit)
 summary(fitAllReg)
 summary(fitStep)
 ```
+
+Checking VIFs
+```{r}
+library(regclass)
+
+VIF(fitAllReg) # Great VIFs, none are even over 2
+VIF(fitStep) 
+# internet(optic), tenure, totalcharges, monthlycharges 
+# are above 5, internetserviceno is around 4.75
+
+# Try the model with the highest VIF removed
+lm(formula = churn ~ contractmtm + 
+    internetservicefibreoptic + tenure + paymentmethodelectroniccheck + 
+    paperlessbilling + internetserviceno + totalcharges + streamingmovies + 
+    multiplelines + onlinesecurity + streamingtv + techsupport + 
+    seniorcitizen + contracttwoyear + dependents, data = cd) %>% VIF()
+
+# Try the model with total charges removed
+lm(formula = churn ~ contractmtm + 
+    internetservicefibreoptic + tenure + paymentmethodelectroniccheck + 
+    paperlessbilling + internetserviceno + streamingmovies + 
+    multiplelines + onlinesecurity + streamingtv + techsupport + 
+    seniorcitizen + contracttwoyear + dependents, data = cd) %>% VIF()
+
+# After removing those two, there are no VIFs over 3
+```
+
 
 ```{r}
 library(dvmisc)
@@ -62,11 +91,11 @@ Studentized_Residuals = rstandard(fit)
 
 # R-Student Residuals
 rStu_Res = rstudent(fit)
-
 ```
 
 
 ```{r}
+#
 OLS_ResidualsAR = fitAllReg$residuals
 
 # Standardized Resiudals
