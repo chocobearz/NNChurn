@@ -38,9 +38,11 @@ def correlation_ratio(categories, measurements):
         eta = np.sqrt(numerator/denominator)
     return eta
 
-cd = pd.read_csv("cleanData.csv")
+
 oneHot = pd.read_csv("oneHotClean.csv")
 
+"""
+cd = pd.read_csv("cleanData.csv")
 #build correlation matrix
 columns = cd.columns
 numeric_columns = ["tenure", "monthlycharges", "totalcharges"]
@@ -79,7 +81,7 @@ sns.heatmap(
 )
 
 plt.savefig('corr.png')
-
+"""
 corr2 = oneHot.corr()
 
 sns.heatmap(
@@ -88,6 +90,6 @@ sns.heatmap(
   yticklabels=corr.columns.values
 )
 
-plt.savefig('corr2.png')
+plt.savefig('corrHot.png')
 
 
