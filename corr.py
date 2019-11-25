@@ -86,8 +86,8 @@ corr2 = oneHot.corr()
 
 sns.heatmap(
   corr2, 
-  xticklabels=corr.columns.values,
-  yticklabels=corr.columns.values
+  xticklabels=corr2.columns.values,
+  yticklabels=corr2.columns.values
 )
 
 plt.savefig('corrHot.png')
