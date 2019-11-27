@@ -1,0 +1,20 @@
+---
+title: "Origin data"
+author: "Vicky, Jackie, Paige"
+date: "27/11/2019"
+output: 
+  prettydoc::html_pretty:
+  theme : cayman
+  highlight : github
+  math: katex
+---
+
+```{r}
+library(knitr)
+cd1 <- read.csv(file = "Churn.csv", header = TRUE, sep = ",", 
+                stringsAsFactors = T)
+
+kable(cd1, caption = "ORIGIN DATA")
+
+```
+
