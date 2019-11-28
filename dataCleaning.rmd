@@ -9,6 +9,7 @@ output:
   math: katex
 ---
 
+
 ##Libraries
 ```{r}
 library(purrr)
@@ -99,6 +100,10 @@ set.seed(6969)
 cleanDataBalance <-upSample(x = cleanData, y = cleanData$churn)
 cleanDataBalance <- cleanDataBalance[,1:23]
 summary(cleanDataBalance)
+```
+
+```{r}
+barplot(table(cleanDataBalance$churn), col = rainbow(3), main = "Churn")
 ```
 
 ```{r}

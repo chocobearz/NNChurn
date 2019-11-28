@@ -18,3 +18,42 @@ kable(cd1, caption = "ORIGIN DATA")
 
 ```
 
+```{r}
+clean <- read.csv(file = "cleanData.csv", header = TRUE, sep = ",", 
+                stringsAsFactors = T)
+
+kable(clean, caption = "TIDIED DATA")
+```
+
+```{r}
+oneHot <- read.csv(file = "oneHotNNData.csv", header = TRUE, sep = ",", 
+                stringsAsFactors = T)
+
+oneHot$internetserviceno <- as.factor(oneHot$internetserviceno)
+oneHot$internetserviceDSL <- as.factor(oneHot$internetserviceDSL)
+oneHot$internetservicefibreoptic <- as.factor(oneHot$internetservicefibreoptic)
+oneHot$contracttwoyear <- as.factor(oneHot$contracttwoyear)
+oneHot$contractoneyear <- as.factor(oneHot$contractoneyear)
+oneHot$contractmtm <- as.factor(oneHot$contractmtm)
+oneHot$paymentmethodelectroniccheck <- as.factor(oneHot$paymentmethodmailedcheck)
+oneHot$paymentmethodbanktransfer <- as.factor(oneHot$paymentmethodbanktransfer)
+oneHot$paymentmethodcreditcard <- as.factor(oneHot$paymentmethodcreditcard)
+oneHot$paymentmethodmailedcheck <- as.factor(oneHot$paymentmethodmailedcheck)
+oneHot$gender <- as.factor(oneHot$gender)
+oneHot$seniorcitizen <- as.factor(oneHot$seniorcitizen)
+oneHot$partner <- as.factor(oneHot$partner)
+oneHot$dependents <- as.factor(oneHot$dependents)
+oneHot$phoneservice <- as.factor(oneHot$phoneservice)
+oneHot$multiplelines <- as.factor(oneHot$multiplelines)
+oneHot$onlinesecurity <- as.factor(oneHot$onlinesecurity)
+oneHot$onlinebackup <- as.factor(oneHot$onlinebackup)
+oneHot$techsupport <- as.factor(oneHot$techsupport)
+oneHot$streamingtv <- as.factor(oneHot$streamingtv)
+oneHot$streamingmovies <- as.factor(oneHot$streamingmovies)
+oneHot$paperlessbilling <- as.factor(oneHot$paperlessbilling)
+oneHot$churn <- as.factor(oneHot$churn)
+oneHot$deviceprotection <- as.factor(oneHot$deviceprotection)
+
+kable(oneHot, caption = "ONEHOT DATA")
+```
+

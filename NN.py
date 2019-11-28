@@ -18,7 +18,6 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 def build_embedding_network():
 
-
     #initialize constructor
     model = Sequential()
 
@@ -97,7 +96,7 @@ def build_embedding_network():
 """
 
 #network training
-K = 2
+K = 5
 runs_per_fold = 15
 n_epochs = 5
 
