@@ -31,36 +31,54 @@ summary(cd)
 ```
 
 ```{r}
-fit <- lm(churn ~ gender + seniorcitizen + partner + dependents + tenure + phoneservice + multiplelines + internetservicefibreoptic + internetserviceno +internetserviceDSL + onlinesecurity + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear +contractmtm + paperlessbilling + paymentmethodcreditcard + paymentmethodbanktransfer + paymentmethodmailedcheck + paymentmethodelectroniccheck + monthlycharges + totalcharges, data = cd)
+fit <- lm(churn ~ gender + seniorcitizen + partner + dependents + tenure + phoneservice + multiplelines + onlinesecurity + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + paperlessbilling + monthlycharges + totalcharges, data = cd)
 summary(fit)
-```
-Lowest AIC
-
-```{r}
-fit <- lm(churn ~ gender + seniorcitizen + partner + dependents + phoneservice + multiplelines + internetservicefibreoptic + internetserviceno +internetserviceDSL + onlinesecurity + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear +contractmtm + paperlessbilling + paymentmethodcreditcard + paymentmethodbanktransfer + paymentmethodmailedcheck + paymentmethodelectroniccheck + monthlycharges + totalcharges + tenureshortterm +tenuremidterm +tenurelongterm, data = cd)
-summary(fit)
+AIC(fit)
+BIC(fit)
 ```
 
 ```{r}
-fit <- lm(churn ~ gender + seniorcitizen + partner + dependents + phoneservice + multiplelines + internetservicefibreoptic + internetserviceno +internetserviceDSL + onlinesecurity + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear +contractmtm + paperlessbilling + paymentmethodcreditcard + paymentmethodbanktransfer + paymentmethodmailedcheck + paymentmethodelectroniccheck + monthlycharges + totalcharges +tenureq1 +tenureq2 +tenureq3 +tenureq4, data = cd)
+fit <- lm(churn ~ gender + seniorcitizen + partner + dependents + phoneservice + multiplelines + onlinesecurity + internetserviceDSL + internetserviceno  + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear  + paperlessbilling + paymentmethodelectroniccheck +paymentmethodmailedcheck +paymentmethodcreditcard  + monthlycharges + totalcharges + tenure , data = cd)
 summary(fit)
-```
-
-```{r}
-fit <- lm(churn ~ gender + seniorcitizen + partner + dependents + tenure + phoneservice + multiplelines + internetservicefibreoptic + internetserviceno +internetserviceDSL + onlinesecurity + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear +contractmtm + paperlessbilling + paymentmethodcheck + paymentmethodauto + monthlycharges + totalcharges, data = cd)
-summary(fit)
-```
-Lowest BIC 
-
-```{r}
-fit <- lm(churn ~ gender + seniorcitizen + partner + dependents + phoneservice + multiplelines + internetservicefibreoptic + internetserviceno +internetserviceDSL + onlinesecurity + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear +contractmtm + paperlessbilling + paymentmethodauto + paymentmethodcheck + monthlycharges + totalcharges +tenuremidterm +tenurelongterm +tenureshortterm, data = cd)
-summary(fit)
-```
-
-```{r}
-fit <- lm(churn ~ gender + seniorcitizen + partner + dependents + phoneservice + multiplelines + internetservicefibreoptic + internetserviceno +internetserviceDSL + onlinesecurity + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear +contractmtm + paperlessbilling + paymentmethodauto + paymentmethodcheck + monthlycharges + totalcharges +tenureq1 +tenureq2 +tenureq3 +tenureq4 , data = cd)
-summary(fit)
+AIC(fit)
 BIC(fit)
 ```
 
 
+```{r}
+fit <- lm(churn ~ gender + seniorcitizen + partner + dependents + phoneservice + multiplelines + onlinesecurity + internetserviceno +internetserviceDSL +onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear  + paperlessbilling + paymentmethodelectroniccheck +paymentmethodcreditcard +paymentmethodbanktransfer  + monthlycharges + totalcharges + tenureq1 +tenureq2 +tenureq3 +tenureq3 , data = cd)
+summary(fit)
+AIC(fit)
+BIC(fit)
+```
+
+```{r}
+fit <- lm(churn ~ gender + seniorcitizen + partner + dependents + phoneservice + multiplelines + onlinesecurity + internetserviceno +internetserviceDSL + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear + paperlessbilling + paymentmethodelectroniccheck +paymentmethodmailedcheck+paymentmethodbanktransfer + paymentmethodelectroniccheck+ monthlycharges + totalcharges + tenureshortterm +tenurelongterm , data = cd)
+summary(fit)
+AIC(fit)
+BIC(fit)
+```
+```{r}
+fit <- lm(churn ~ gender + seniorcitizen + partner + dependents + phoneservice + multiplelines + onlinesecurity + internetserviceno +internetserviceDSL + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear + paperlessbilling + paymentmethodauto + monthlycharges + totalcharges +tenuremidterm +tenureshortterm, data = cd)
+summary(fit)
+AIC(fit)
+BIC(fit)
+```
+
+```{r}
+fit <- lm(churn ~ gender + seniorcitizen + partner + dependents + phoneservice + multiplelines + onlinesecurity + internetserviceno +internetserviceDSL +  onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear + paperlessbilling +paymentmethodcheck  + monthlycharges + totalcharges +tenure, data = cd)
+summary(fit)
+AIC(fit)
+BIC(fit)
+```
+Highest adjustedR
+Lowest AIC
+Lowest BIC
+```{r}
+fit <- lm(churn ~ gender + seniorcitizen + partner + dependents + phoneservice + multiplelines + onlinesecurity + internetserviceno +internetserviceDSL + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear  + paperlessbilling + paymentmethodauto  + monthlycharges + totalcharges +tenureq1 +tenureq2 +tenureq3, data = cd)
+summary(fit)
+AIC(fit)
+BIC(fit)
+```
+
+lowest pvalue
