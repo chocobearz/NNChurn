@@ -40,7 +40,7 @@ def correlation_ratio(categories, measurements):
     return eta
 
 
-oneHot = pd.read_csv("oneHotClean.csv")
+oneHot = pd.read_csv("oneHotNNData.csv")
 
 
 cd = pd.read_csv("cleanData.csv")
