@@ -37,6 +37,37 @@ round((4635 + 1032) / (nrow(cd)), digits = 3)
 ```
 
 ```{r}
+fit <- glm(churn ~ contract + internetservice + tenure + paperlessbilling + streamingmovies + onlinesecurity + techsupport + totalcharges + paymentmethodAuto + multiplelines + seniorcitizen + streamingtv + monthlycharges + dependents, data = cd, family = "binomial"(link = "probit"))
+
+glm_probs <- predict(fit, type = "response")
+
+glm_preds <- rep("No", length(glm_probs))
+
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = cd$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((4649 + 1020) / (nrow(cd)), digits = 3)
+```
+```{r}
+fit <- glm(churn ~ contract + internetservice + tenure + paperlessbilling + streamingmovies + onlinesecurity + techsupport + totalcharges + paymentmethodAuto + multiplelines + seniorcitizen + streamingtv + monthlycharges + dependents, data = cd, family = "binomial"(link = "cloglog"))
+
+glm_probs <- predict(fit, type = "response")
+
+glm_preds <- rep("No", length(glm_probs))
+
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = cd$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((4667 + 1011) / (nrow(cd)), digits = 3)
+```
+
+```{r}
 fit <- glm(churn ~ contract + internetservice + tenure + paperlessbilling + streamingmovies + onlinesecurity + techsupport + totalcharges + paymentmethodAuto + multiplelines + seniorcitizen + streamingtv + monthlycharges + dependents, data = cd, family = "binomial")
 
 glm_probs <- predict(fit, type = "response")
@@ -119,3 +150,130 @@ round((4650 + 1035) / (nrow(cd)), digits = 3)
 
 lowest type 2 error 
 highest overall correct classifications
+
+```{r}
+smpsize <- floor(0.70*nrow(cd))
+
+set.seed(6969)
+train_index <- sample(seq_len(nrow(cd)), size = smpsize)
+
+train <- cd[train_index, ]
+test <- cd[-train_index, ]
+```
+
+
+```{r}
+fit <- glm(churn ~ contract + internetservice + tenure + paymentmethod + paperlessbilling + onlinesecurity + totalcharges + phoneservice + techsupport + monthlycharges + onlinebackup + seniorcitizen + multiplelines + dependents + deviceprotection, data = train, family = "binomial")
+
+glm_probs <-  predict(fit,newdata=test,type="response")
+
+glm_preds <- rep("No", length(glm_probs))
+
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = test$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((1352 + 329) / (nrow(cd1)), digits = 3)
+
+```
+
+```{r}
+fit <- glm(churn ~ contract + internetservice + tenure + paperlessbilling + streamingmovies + onlinesecurity + techsupport + totalcharges + paymentmethodAuto + multiplelines + seniorcitizen + streamingtv + monthlycharges + dependents, data = train, family = "binomial"(link = "probit"))
+
+glm_probs <-  predict(fit,newdata=test,type="response")
+
+glm_preds <- rep("No", length(glm_probs))
+
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = test$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((1359 + 327) / (nrow(cd1)), digits = 3)
+```
+
+```{r}
+fit <- glm(churn ~ phoneservice + onlinesecurity + techsupport + contract + contract + monthlycharges + totalcharges + tenure4, data = train, family = "binomial")
+
+glm_probs <-  predict(fit,newdata=test,type="response")
+
+glm_preds <- rep("No", length(glm_probs))
+
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = test$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((1376 + 288) / (nrow(cd1)), digits = 3)
+```
+Lowest type 1 error
+
+```{r}
+fit <- glm(churn ~ phoneservice +onlinesecurity + techsupport + contract + contract + monthlycharges + totalcharges + paymentmethod, data = train, family = "binomial")
+
+glm_probs <-  predict(fit,newdata=test,type="response")
+
+glm_preds <- rep("No", length(glm_probs))
+
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = test$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((1350 + 309) / (nrow(cd1)), digits = 3)
+```
+
+
+```{r}
+fit <- glm(churn ~ . -tenure4 -tenure3 -paymentmethod, data = train, family = "binomial")
+
+glm_probs <-  predict(fit,newdata=test,type="response")
+
+glm_preds <- rep("No", length(glm_probs))
+
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = test$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((1355 + 329) / (nrow(cd1)), digits = 3)
+```
+
+```{r}
+fit <- glm(churn ~ . -tenure4 -tenure3 -paymentmethodAuto, data = train, family = "binomial")
+
+glm_probs <-  predict(fit,newdata=test,type="response")
+
+glm_preds <- rep("No", length(glm_probs))
+
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = test$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((1359 + 333) / (nrow(cd1)), digits = 3)
+```
+
+```{r}
+fit <- glm(churn ~ contract + internetservice + tenure + paperlessbilling + streamingmovies + onlinesecurity + techsupport + totalcharges + paymentmethodAuto + multiplelines + seniorcitizen + streamingtv + monthlycharges + dependents, data = train, family = "binomial")
+
+glm_probs <-  predict(fit,newdata=test,type="response")
+
+glm_preds <- rep("No", length(glm_probs))
+
+glm_preds[glm_probs > 0.5] <- "Yes"
+
+cd1 <- data.frame(Churn = test$churn, predicted = glm_preds)
+
+xtabs(~ predicted + Churn, data = cd1)
+
+round((1355 + 331) / (nrow(cd1)), digits = 3)
+```
+
