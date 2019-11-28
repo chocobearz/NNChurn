@@ -15,9 +15,8 @@ output:
 #load clean data
 ```{r}
 library(dplyr)
-library(regclass) # For VIF
 
-cd <- read.csv(file = "oneHotNNData.csv", header = TRUE, sep = ",", 
+cd <- read.csv(file = "cleanData.csv", header = TRUE, sep = ",", 
                 stringsAsFactors = T)
 
 print("ORIGIN DATA")
@@ -57,147 +56,9 @@ summary(fit)
 BIC(fit)
 ```
 
-Correlation plot functions
-```{r}
-cor_ratio <- function(column1, column2){
-    # Some assumptions
-    # This function assumes no NA's, and that the rows of both columns are
-    # in correct orders
-    
-    # If the order of the column classes are factor first, then use
-    # the same function but swap the columns
-    if(class(column1) == "factor" & 
-       (class(column2) == "numeric" | class(column2) == "integer")){
-        cor_ratio(column2, column1)
-    }
-    # If the columns types are in the correct order
-    else if( (class(column1) == "numeric" | class(column1) == "integer") &
-        class(column2) == "factor"){
-            # Create a temporary dataframe to store columns for filter function
-            temp_df <- data.frame("score" = column1,
-                                  "subject" = column2)
-            
-            # Create a dataframe to store sum of squares of category
-            # observation minus the category mean
-            ss_df <- expand.grid( "factors" = levels(factor(column2)),
-                                    "ss" = 0)
-            for( i in c(1:length( levels(factor(column2)) )) ){
-                subset <- filter(temp_df, 
-                                 subject == levels(factor(column2))[i] )
-                subset_mean <- mean(subset[ , 1])
-                sum_value = sum((subset[ , 1] - subset_mean)^2)
-                ss_df$ss[i] <- sum_value
-            }
-            # Remove variables that are no longer needed
-            rm(subset, subset_mean, sum_value)
-            
-            # Assigning variables for these sums of squares for debugging
-            ss1 <- sum(ss_df$ss)
-            ss2 <- sum( (temp_df$score - mean(temp_df$score))^2 )
-            
-            correlation_value <- sqrt( (ss2 - sum(ss_df$ss)) / ss2)
-            
-            # Removing variables that are no longer needed
-            rm(temp_df, ss1, ss2)
-            
-            return(correlation_value)
-        }
-    else{ # Error message if the incorrect inputs are given
-        return("Error! This function only accepts one vector of class 'numeric'
-               and one vector of class 'factor'.")
-    }
-}
-
-categorical_cor <- function(column1, column2){
-    # This function uses the cor_ratio function
-    if( class(column1) == "factor" &&
-        (class(column2) == "numeric" || class(column2) == "integer")
-    ){ categorical_cor(column2, column1)
-    } # Columns should be numerical/integer, then factor
-    # else if(column1 == column2){
-    #     # Hard coding a correlation of 1 if both columns are the same
-    #     return(1)
-    # }
-    else{
-        if( # Use chi squared if class(column) == factor for both
-            (class(column1) == "factor") &&
-            (class(column2) == "factor")
-        ){
-            # Not sure if correct needs to be equal to F, 
-            # but the link shows it
-            
-            # https://www.r-bloggers.com/example-8-39-calculating-cramers-v/
-            cramers_v = sqrt(chisq.test(column1, column2, 
-                                        correct = F)$statistic / 
-                                 (length(column1) * 
-                                      ( min(length(unique(column1)), 
-                                           length(unique(column2))) - 1 )))
-            return(as.numeric(cramers_v))
-            #return(chisq.test(column1, column2, correct = F)$p.value)
-        }
-        else if( # Use corr if class(column) == numerical or integer for both
-            ( (class(column1) == "numeric") ||
-            (class(column1) == "integer") ) &&
-            ( (class(column2) == "numeric") ||
-            (class(column2) == "integer") )
-        ){
-            cor(column1, column2)
-        }
-        else if( # Use the p-value from aov if the columns are a mix
-            (class(column1) == "numeric" || class(column1) == "integer") &&
-            class(column2) == "factor"
-        ){
-            # Get a correlation ratio for mixed columns
-            return(cor_ratio(column1, column2))
-        }
-        else{ # Return this message if at least one of the columns
-            # is a different class than factor, numerical or integer
-            return("error, 
-                   class(column) must be factor, numerical, or integer")
-        }
-    }
-}
+```{r, eval = F}
+fit <- glm(churn ~ . -tenure -paymentmethod -tenure3, data = cd, family = "binomial")
+summary(fit)
+BIC(fit)
 ```
-
-
-Correlation plot
-```{r}
-cd.cor <- cbind(expand.grid("Column_1" = colnames(cd), 
-                            "Column_2" = colnames(cd)), "Corr" = 0)
-
-for(i in c(1:dim(cd.cor)[1])){
-    cd.cor[i, 3] <- categorical_cor(cd[[ cd.cor[i, 1] ]], 
-                                    cd[[ cd.cor[i, 2] ]])
-    
-}
-
-library(ggplot2)
-library(forcats)
-
-ggplot(data = cd.cor, aes(x = Column_1, y = fct_rev(factor(Column_2)), 
-                          fill = Corr)) +
-    geom_tile(color = "black") +
-    scale_fill_gradient2(low = "#1a0033", high = "white", mid = "#d90048",
-                         midpoint = 0, limit = c(-1, 1), space = "Lab",
-                         name = "Correlation") +
-    theme_minimal() + 
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-    coord_fixed() +
-    xlab("Variable 1") +
-    ylab("Variable 2")
-```
-
-Testing stuff
-```{r}
-fit <- lm(churn ~ . -internetservicefibreoptic -contractmtm -paymentmethodcreditcard, data = cd)
-
-VIF(fit)
-alias(fit)
-```
-
-
-```
-=======
-
->>>>>>> b5ea8be0e31cceece529fc989274e270c5f7a6f4
 
