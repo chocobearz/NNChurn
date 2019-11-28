@@ -29,7 +29,7 @@ library(knitr)
 
 ```{r}
 library(dplyr)# Load the data
-cd <- read.csv(file = "oneHotNNData.csv", header = TRUE, sep = ",", 
+cd <- read.csv(file = "oneHotClean.csv", header = TRUE, sep = ",", 
                 stringsAsFactors = T)
 
 print("ORIGIN DATA")
@@ -40,7 +40,7 @@ summary(cd)
 
 ```{r}
 mod = regsubsets(
-  churn ~ gender + seniorcitizen + partner + dependents + tenure + phoneservice + multiplelines + internetservicefibreoptic + internetserviceno +internetserviceDSL + onlinesecurity + onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear +contractmtm + paperlessbilling + paymentmethodcreditcard + paymentmethodbanktransfer + paymentmethodmailedcheck + paymentmethodelectroniccheck + monthlycharges + totalcharges, data = cd,nbest = 10)
+  churn ~ gender + seniorcitizen + partner + dependents + phoneservice + multiplelines + onlinesecurity + internetserviceno +internetserviceDSL +  onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear + paperlessbilling +paymentmethodcheck  + monthlycharges + totalcharges +tenure, data = cd,nbest = 10)
 
 mod.summary = summary(mod)
 
@@ -48,29 +48,39 @@ which.max(mod.summary$adjr2)
 which.min(mod.summary$cp)
 which.min(mod.summary$bic)
 
-coef(mod, id = 81)
+coef(mod, id = 41)
+coef(mod, id = 21)
+coef(mod, id = 11)
 
-print(mod.summary$adjr2[81])
-print(mod.summary$cp[81])
-print(mod.summary$bic[81])
+print("ADJR, CP, BIC")
+print("5 regressor model")
+print(mod.summary$adjr2[41])
+print(mod.summary$cp[41])
+print(mod.summary$bic[41])
+print("3 regressor model")
+print(mod.summary$adjr2[21])
+print(mod.summary$cp[21])
+print(mod.summary$bic[21])
+print("2 regressor model")
+print(mod.summary$adjr2[11])
+print(mod.summary$cp[11])
+print(mod.summary$bic[11])
 ```
 
 ```{r}
-fir  = lm(
+fit  = lm(
     churn ~ 
-    phoneservice +
-    onlinebackup +
-    deviceprotection +
-    streamingtv +
-    paymentmethodcreditcard +
-    paymentmethodbanktranser +
-    paymentmethodelectroniccheck
-    contractmtm +
-    internetserviceDSL,
+      internetserviceno +
+      internetserviceDSL +
+      paymentmethodcheck,
   data = cd
 )
+summary(fit)
+print("AIC")
+AIC(fit)
+print("BIC")
+BIC(fit)
 ```
-
 
 
 
@@ -80,32 +90,11 @@ fir  = lm(
 library(MASS)
 library(stats4)
 
-mfit_null  = glm(churn~1, data=cd, family = "binomial")
-mfit_full  = glm(
-    churn ~ 
-    gender  +
-    seniorcitizen +
-    dependents +
-    partner +
-    phoneservice +
-    multiplelines +
-    internetservice +
-    onlinebackup +
-    onlinesecurity +
-    deviceprotection +
-    techsupport +
-    streamingtv +
-    streamingmovies +
-    contract +
-    paperlessbilling +
-    monthlycharges +
-    totalcharges +
-    paymentmethodAuto +
-    tenure4, 
-  data = cd,
-  family = "binomial"
-)
+mfit_null  = lm(churn~1, data=cd)
+mfit_full  = lm( churn ~ gender + seniorcitizen + partner + dependents + phoneservice + multiplelines + onlinesecurity + internetserviceno +internetserviceDSL +  onlinebackup + deviceprotection + techsupport + streamingtv + streamingmovies + contractoneyear + contracttwoyear + paperlessbilling +paymentmethodcheck  + monthlycharges + totalcharges +tenure, data = cd)
 step <- step(mfit_null, data=cd, scope=list(upper=mfit_full), direction="both")
 step
 BIC(step)
 ```
+
+
